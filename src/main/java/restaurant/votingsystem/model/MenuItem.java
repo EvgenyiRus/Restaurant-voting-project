@@ -10,6 +10,8 @@ import java.util.Date;
 
 @Entity
 @Table(name="menu_items")
+//@Table(name="menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = "restaurant_id,date,dish_id",
+//        name = " menus_items_idx")})
 public class MenuItem {
 
     @Id

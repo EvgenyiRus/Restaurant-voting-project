@@ -1,6 +1,10 @@
 package restaurant.votingsystem.model;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -8,16 +12,18 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "dishes")
+@Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = "description",
+        name = "dishes_unique_description_idx")})
 public class Dish extends AbstractBaseEntity{
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     @NotBlank
     @Size(max = 100)
     private String description;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false,columnDefinition = "Integer default 0")
     @NotNull
+    @Range(min = 0, max = 99999)
     private double price;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dish")
