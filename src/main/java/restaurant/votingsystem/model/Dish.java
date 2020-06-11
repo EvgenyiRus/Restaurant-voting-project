@@ -1,5 +1,9 @@
 package restaurant.votingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
@@ -27,6 +31,8 @@ public class Dish extends AbstractBaseEntity{
     private double price;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dish")
+    @OrderBy("date DESC")
+    //@BatchSize(size = 20)
     private List<MenuItem> menuItems;
 
     public Dish() {
@@ -48,12 +54,21 @@ public class Dish extends AbstractBaseEntity{
         this.price = price;
     }
 
+    @JsonIgnore
+    public List<MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(List<MenuItem> menuItems) {
+        this.menuItems = menuItems;
+    }
+
     @Override
     public String toString() {
         return "Dish{" +
                 "description='" + description + '\'' +
                 ", price=" + price +
-                "" +
+                ", menuItems=" + menuItems +
                 '}';
     }
 }

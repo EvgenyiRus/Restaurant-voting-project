@@ -5,11 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.repository.DishRepository;
-import restaurant.votingsystem.service.DishService;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -21,31 +23,25 @@ public class DishController {
     @Autowired
     private DishRepository repository;
 
-    @GetMapping("/{id:\\d+}")
+    @GetMapping("/{id:}")
     public Dish get(@PathVariable int id) {
-        log.info("get dish {} ", id);
+        log.info("Get dish with id={} ", id);
         return repository.findById(id);
     }
 
     @GetMapping
     public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
-        log.info("get all dishes that the description contains '{}'",description);
+        log.info("Det all dishes that the description contains '{}'",description);
         if (description!=null) {
             return repository.getAllByDescription(description.toLowerCase());
         }
         return repository.getAllByDescription("");
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Dish save(@RequestBody Dish dish){
-        log.info("'{}' was added", dish);
-        return repository.save(dish);
-    }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        log.info("dish with id={} was deleted", id);
+        log.info("Dish with id={} was deleted", id);
         repository.delete(id);
     }
 
@@ -55,5 +51,17 @@ public class DishController {
         log.info("Dish '{}' was updated", dish.getDescription());
         dish.setId(id);
         repository.save(dish);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Dish> createWithLocation(@RequestBody Dish dish) {
+        log.info("New dish '{}' was added", dish.getDescription());
+        Dish created = repository.save(dish);
+
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(created.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 }

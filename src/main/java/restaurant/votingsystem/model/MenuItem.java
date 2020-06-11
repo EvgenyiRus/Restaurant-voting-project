@@ -1,12 +1,14 @@
 package restaurant.votingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name="menu_items")
@@ -22,18 +24,20 @@ public class MenuItem {
     @Column(name = "date", nullable = false, columnDefinition = "DATE default now")
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date date = new Date();
+    private LocalDate date = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
+    @Fetch(FetchMode.JOIN)
     private Dish dish;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NotNull
+    @Fetch(FetchMode.JOIN)
     private Restaurant restaurant;
 
     public MenuItem() {
@@ -47,11 +51,11 @@ public class MenuItem {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -63,6 +67,7 @@ public class MenuItem {
         this.dish = dish;
     }
 
+    //@JsonIgnore
     public Restaurant getRestaurant() {
         return restaurant;
     }
