@@ -3,11 +3,11 @@ package restaurant.votingsystem.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.MenuItemRepository;
@@ -16,6 +16,7 @@ import restaurant.votingsystem.service.RestaurantService;
 import restaurant.votingsystem.to.RestaurantTo;
 import restaurant.votingsystem.util.RestaurantUtil;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,13 +40,40 @@ public class RestaurantController {
 
     @GetMapping("/{id}/menus")
     public List<Dish> getWithMenu(@PathVariable int id) {
-        log.info("Get the menu from the restaurant with id={}", id);
+        log.info("Get menu from the restaurant with id={}", id);
         return menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
     }
 
     @GetMapping("/menus")
     public List<RestaurantTo> getAllMenusTo() {
-        log.info("Get the menu of all restaurants");
+        log.info("Get menus of all restaurants");
         return RestaurantUtil.getRestaurantsMenus(menuItemRepository.getAllMenus(LocalDate.now()));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        log.info("Restaurant with id={} was deleted", id);
+        restaurantRepository.delete(id);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
+        log.info("Restaurant with id={} was updated", restaurant.getId());
+        restaurant.setId(id);
+        restaurantRepository.save(restaurant);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
+        log.info("New restaurant '{}' was added");
+        Restaurant created = restaurantRepository.save(restaurant);
+
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(created.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 }

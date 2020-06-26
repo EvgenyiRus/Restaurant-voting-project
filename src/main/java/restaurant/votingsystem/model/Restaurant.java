@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name="restaurants")
 public class Restaurant extends AbstractBaseEntity{
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     @NotBlank
     private String name;
 
