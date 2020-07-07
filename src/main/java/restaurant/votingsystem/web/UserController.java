@@ -19,11 +19,11 @@ import java.util.List;
 public class UserController {
     static final String REST_URL = "/users";
     @Autowired
-    protected UserRepository service;
+    protected UserRepository userRepository;
 
     @GetMapping
     public List<User> getAll() {
-        return service.findAll();
+        return userRepository.findAll();
     }
 //
 //    @Override

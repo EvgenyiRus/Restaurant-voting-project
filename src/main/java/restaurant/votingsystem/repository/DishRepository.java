@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import restaurant.votingsystem.model.Dish;
+import restaurant.votingsystem.to.DishHistory;
 
 import java.util.List;
 
+@Transactional(readOnly = true)
 public interface DishRepository extends JpaRepository<Dish,Integer> {
-
-    Dish findById(int id);
 
     @Query("SELECT d FROM Dish d where lower(d.description) like %:name% ORDER BY d.description asc")
     List<Dish> getAllByDescription(@Param("name") String name);

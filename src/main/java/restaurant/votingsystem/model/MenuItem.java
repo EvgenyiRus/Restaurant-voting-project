@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -32,6 +33,11 @@ public class MenuItem {
     @NotNull
     @Fetch(FetchMode.JOIN)
     private Dish dish;
+
+    @Column(name = "price", nullable = false,columnDefinition = "Integer default 0")
+    @NotNull
+    @Range(min = 0, max = 99999)
+    private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -65,6 +71,14 @@ public class MenuItem {
 
     public void setDish(Dish dish) {
         this.dish = dish;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     //@JsonIgnore

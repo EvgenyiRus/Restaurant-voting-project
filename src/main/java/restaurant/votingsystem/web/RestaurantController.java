@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
+import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.repository.RestaurantRepository;
@@ -32,6 +33,12 @@ public class RestaurantController {
     @Autowired
     MenuItemRepository menuItemRepository;
 
+    @GetMapping("/{id}")
+    public Restaurant get(@PathVariable int id) {
+        log.info("Get  restaurant with id={} ", id);
+        return restaurantRepository.findById(id).orElseThrow();
+    }
+
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("Get all restaurants");
@@ -44,12 +51,12 @@ public class RestaurantController {
         return menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
     }
 
+
     @GetMapping("/menus")
     public List<RestaurantTo> getAllMenusTo() {
         log.info("Get menus of all restaurants");
         return RestaurantUtil.getRestaurantsMenus(menuItemRepository.getAllMenus(LocalDate.now()));
     }
-
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
