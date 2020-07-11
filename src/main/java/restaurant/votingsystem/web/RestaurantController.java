@@ -9,11 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
-import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.repository.RestaurantRepository;
-import restaurant.votingsystem.service.RestaurantService;
 import restaurant.votingsystem.to.RestaurantTo;
 import restaurant.votingsystem.util.RestaurantUtil;
 
@@ -50,7 +48,6 @@ public class RestaurantController {
         log.info("Get menu from the restaurant with id={}", id);
         return menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
     }
-
 
     @GetMapping("/menus")
     public List<RestaurantTo> getAllMenusTo() {

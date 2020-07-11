@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DishHistoryUtil {
+
     public DishHistoryUtil() {
     }
 
@@ -34,9 +35,10 @@ public class DishHistoryUtil {
                                             menuItem.getRestaurant().getName())))
                     .collect(Collectors.toList());
 
-            dishHistory.add(new DishHistory(entry.getKey(),menuItemTos));
+            dishHistory.add(new DishHistory(
+                    entry.getKey().getDescription(),
+                    menuItemTos));
         }
         return dishHistory;
     }
-
 }

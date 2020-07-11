@@ -35,7 +35,6 @@ public class RestaurantUtil {
                     entry.getKey().getName(),
                     dishes));
         }
-
         return restaurantTos;
     }
 

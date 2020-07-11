@@ -1,24 +1,22 @@
 package restaurant.votingsystem.to;
 
-import restaurant.votingsystem.model.Dish;
-
 import java.util.List;
 
-public class DishHistory extends BaseTo{
-    private Dish dish;
+public class DishHistory {
+    private String dishDescription;
     private List<MenuItemTo> menuItems;
 
-    public DishHistory(Dish dish, List<MenuItemTo> menuItems) {
-        this.dish = dish;
+    public DishHistory(String dishDescription, List<MenuItemTo> menuItems) {
+        this.dishDescription = dishDescription;
         this.menuItems = menuItems;
     }
 
-    public Dish getDish() {
-        return dish;
+    public String getDish() {
+        return dishDescription;
     }
 
-    public void setDish(Dish dish) {
-        this.dish = dish;
+    public void setDish(String dishDescription) {
+        this.dishDescription = dishDescription;
     }
 
     public List<MenuItemTo> getMenuItems() {
