@@ -56,7 +56,7 @@ CREATE TABLE menu_items(
     price           double default 0 NOT NULL,
     FOREIGN KEY(dish_id) REFERENCES dishes (id) ON DELETE CASCADE,
     FOREIGN KEY(restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE,
-    CONSTRAINT menus_items_idx UNIQUE (restaurant_id,date,dish_id)
+    CONSTRAINT menus_items_idx UNIQUE (date,restaurant_id,dish_id)
 );
 CREATE INDEX menu_items_idx
     ON menu_items (dish_id,date);

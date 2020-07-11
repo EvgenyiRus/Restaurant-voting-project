@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id","date","dish_id"},
+@Table(name="menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"date","restaurant_id","dish_id"},
         name = " menus_items_idx")})
 public class MenuItem {
     @Id

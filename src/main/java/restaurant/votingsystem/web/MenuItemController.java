@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.repository.MenuItemRepository;
 
@@ -33,13 +32,13 @@ public class MenuItemController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MenuItem> createWithLocation(@RequestBody MenuItem menuItem) {
-        log.info("New menuItem '{}' was added", menuItem.getId());
-        MenuItem created = menuItemRepository.save(menuItem);
+        log.info("New menuItem was added");
+        menuItemRepository.save(menuItem);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .buildAndExpand(menuItem.getId()).toUri();
 
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).body(menuItem);
     }
 }

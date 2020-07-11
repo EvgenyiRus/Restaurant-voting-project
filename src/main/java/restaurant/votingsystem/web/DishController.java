@@ -18,6 +18,8 @@ import restaurant.votingsystem.util.DishHistoryUtil;
 import java.net.URI;
 import java.util.List;
 
+import static org.jsoup.internal.StringUtil.isBlank;
+
 @RestController
 @RequestMapping(value = DishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class DishController {
@@ -39,7 +41,7 @@ public class DishController {
     @GetMapping
     public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
         log.info("Get all dishes that the description contains '{}'",description);
-        if (description!=null) {
+        if (!isBlank(description)) {
             return dishRepository.getAllByDescription(description.toLowerCase());
         }
         return dishRepository.getAllByDescription("");
@@ -69,12 +71,12 @@ public class DishController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Dish> createWithLocation(@RequestBody Dish dish) {
         log.info("New dish '{}' was added", dish.getDescription());
-        Dish created = dishRepository.save(dish);
+        dishRepository.save(dish);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
+                .buildAndExpand(dish.getId()).toUri();
 
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).body(dish);
     }
 }
