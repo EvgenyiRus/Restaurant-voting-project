@@ -17,7 +17,7 @@ public class Vote {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTE_SEQ")
     private Integer id;
 
-    @Column(name = "date", nullable = false, columnDefinition = "DATE default now")
+    @Column(name = "datetime", nullable = false, columnDefinition = "DATE default now")
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date date = new Date();

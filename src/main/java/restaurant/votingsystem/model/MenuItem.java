@@ -12,11 +12,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="menu_items")
-//@Table(name="menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = "restaurant_id,date,dish_id",
-//        name = " menus_items_idx")})
+@Table(name="menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"restaurant_id","date","dish_id"},
+        name = " menus_items_idx")})
 public class MenuItem {
-
     @Id
     @SequenceGenerator(name = "MENU_ITEMS_SEQ", sequenceName = "MENU_ITEMS_SEQ", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MENU_ITEMS_SEQ")
