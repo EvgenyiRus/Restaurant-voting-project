@@ -1,16 +1,14 @@
 package restaurant.votingsystem.to;
 
 import restaurant.votingsystem.model.Dish;
-import restaurant.votingsystem.model.MenuItem;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class DishHistory extends BaseTo{
     private Dish dish;
-    private List<MenuItem> menuItems;
+    private List<MenuItemTo> menuItems;
 
-    public DishHistory(Dish dish, List<MenuItem> menuItems) {
+    public DishHistory(Dish dish, List<MenuItemTo> menuItems) {
         this.dish = dish;
         this.menuItems = menuItems;
     }
@@ -23,11 +21,11 @@ public class DishHistory extends BaseTo{
         this.dish = dish;
     }
 
-    public List<MenuItem> getMenuItems() {
+    public List<MenuItemTo> getMenuItems() {
         return menuItems;
     }
 
-    public void setMenuItems(List<MenuItem> menuItems) {
+    public void setMenuItems(List<MenuItemTo> menuItems) {
         this.menuItems = menuItems;
     }
 

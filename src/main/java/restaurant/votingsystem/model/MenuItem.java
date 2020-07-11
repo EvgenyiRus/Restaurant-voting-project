@@ -81,7 +81,6 @@ public class MenuItem {
         this.price = price;
     }
 
-    //@JsonIgnore
     public Restaurant getRestaurant() {
         return restaurant;
     }

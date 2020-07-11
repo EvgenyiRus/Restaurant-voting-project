@@ -10,6 +10,10 @@ public class DishTo extends BaseTo {
         this.price = price;
     }
 
+    public DishTo(String description) {
+        this.description = description;
+    }
+
     public String getDescription() {
         return description;
     }

@@ -12,6 +12,11 @@ public class RestaurantTo extends BaseTo {
         this.dishes = dishes;
     }
 
+    public RestaurantTo(Integer id,String name) {
+        super(id);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
