@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.repository.MenuItemRepository;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,5 +29,17 @@ public class MenuItemController {
     public List<MenuItem> getAllToDay() {
         log.info("Get all menus items from restaurants");
         return menuItemRepository.getAllMenus(LocalDate.now());
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MenuItem> createWithLocation(@RequestBody MenuItem menuItem) {
+        log.info("New menuItem '{}' was added", menuItem.getId());
+        MenuItem created = menuItemRepository.save(menuItem);
+
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(created.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 }

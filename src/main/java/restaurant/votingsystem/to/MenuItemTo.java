@@ -1,7 +1,5 @@
 package restaurant.votingsystem.to;
 
-import restaurant.votingsystem.model.Restaurant;
-
 import java.time.LocalDate;
 
 public class MenuItemTo extends BaseTo{
