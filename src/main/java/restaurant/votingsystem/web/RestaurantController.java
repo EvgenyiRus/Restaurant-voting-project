@@ -1,5 +1,6 @@
 package restaurant.votingsystem.web;
 
+import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import restaurant.votingsystem.model.Dish;
+import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.repository.RestaurantRepository;
+import restaurant.votingsystem.to.DishTo;
+import restaurant.votingsystem.to.MenuItemTo;
 import restaurant.votingsystem.to.RestaurantTo;
 import restaurant.votingsystem.util.RestaurantUtil;
 
@@ -31,22 +34,17 @@ public class RestaurantController {
     @Autowired
     MenuItemRepository menuItemRepository;
 
-    @GetMapping("/{id}")
-    public Restaurant get(@PathVariable int id) {
-        log.info("Get  restaurant with id={} ", id);
-        return restaurantRepository.findById(id).orElseThrow();
-    }
-
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("Get all restaurants");
         return restaurantRepository.getAll();
     }
 
-    @GetMapping("/{id}/menus")
-    public List<Dish> getWithMenu(@PathVariable int id) {
-        log.info("Get menu from the restaurant with id={}", id);
-        return menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
+    @GetMapping("/{id}")
+    public Restaurant get(@PathVariable int id) throws NotFoundException{
+        log.info("Get restaurant with id={} ", id);
+        return restaurantRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("No restaurant found with id={} " + id));
     }
 
     @GetMapping("/menus")
@@ -54,11 +52,51 @@ public class RestaurantController {
         log.info("Get menus of all restaurants");
         return RestaurantUtil.getRestaurantsMenus(menuItemRepository.getAllMenus(LocalDate.now()));
     }
+
+    @GetMapping("/{id}/menus")
+    public List<MenuItemTo> getWithMenu(@PathVariable int id) {
+        log.info("Get menu from restaurant with id={}", id);
+        return RestaurantUtil.getMenusByRestaurant(menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now()));
+    }
+
+    @GetMapping("/{id}/menusID")
+    public List<MenuItem> getWithMenuID(@PathVariable int id) {
+        log.info("Get menu from restaurant with id={}", id);
+        return menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("Restaurant with id={} was deleted", id);
         restaurantRepository.delete(id);
+    }
+
+    //Add restaurant
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
+        log.info("New restaurant was added");
+        Restaurant created = restaurantRepository.save(restaurant);
+
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(created.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    //Add menuItem
+    @PostMapping(value = "/{id}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MenuItem> createWithLocation(@RequestBody MenuItem menuItem, @PathVariable int id) {
+        log.info("New menu item for restaurant with id={} was added",id);
+        menuItem.setRestaurant(restaurantRepository.findById(id).orElseThrow());
+        menuItemRepository.save(menuItem);
+
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/{id}")
+                .buildAndExpand(menuItem.getId()).toUri();
+
+        return ResponseEntity.created(uriOfNewResource).body(menuItem);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -69,15 +107,12 @@ public class RestaurantController {
         restaurantRepository.save(restaurant);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
-        log.info("New restaurant '{}' was added");
-        Restaurant created = restaurantRepository.save(restaurant);
-
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
-
-        return ResponseEntity.created(uriOfNewResource).body(created);
+    @PutMapping(value = "/{restaurantId}/menus/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void update(@RequestBody MenuItem menuItem, @PathVariable int restaurantId, @PathVariable int menuItemId) {
+        log.info("Menu item with id={} for restaurant was updated", menuItem.getId());
+        menuItem.setRestaurant(restaurantRepository.findById(restaurantId).orElseThrow());
+        menuItem.setId(menuItemId);
+        menuItemRepository.save(menuItem);
     }
 }

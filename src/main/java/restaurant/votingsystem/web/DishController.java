@@ -63,7 +63,7 @@ public class DishController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody Dish dish, @PathVariable int id) {
-        log.info("Dish '{}' was updated", dish.getDescription());
+        log.info("Dish with id='{}' was updated", id);
         dish.setId(id);
         dishRepository.save(dish);
     }

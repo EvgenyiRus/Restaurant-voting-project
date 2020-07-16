@@ -3,20 +3,20 @@ package restaurant.votingsystem.to;
 import java.util.List;
 
 public class DishHistory {
-    private String dishDescription;
+    private String description;
     private List<MenuItemTo> menuItems;
 
-    public DishHistory(String dishDescription, List<MenuItemTo> menuItems) {
-        this.dishDescription = dishDescription;
+    public DishHistory(String description, List<MenuItemTo> menuItems) {
+        this.description = description;
         this.menuItems = menuItems;
     }
 
     public String getDish() {
-        return dishDescription;
+        return description;
     }
 
-    public void setDish(String dishDescription) {
-        this.dishDescription = dishDescription;
+    public void setDish(String description) {
+        this.description = description;
     }
 
     public List<MenuItemTo> getMenuItems() {

@@ -18,9 +18,8 @@ public class DishHistoryUtil {
     }
 
     public static List<DishHistory> getHistoryDish(Collection<MenuItem> restaurantsMenuItems) {
-        Map<Dish, List<MenuItem>> allMenuItemsGroupingByDish =
-                restaurantsMenuItems.stream().
-                        collect(Collectors.groupingBy(MenuItem::getDish));
+        Map<Dish, List<MenuItem>> allMenuItemsGroupingByDish = restaurantsMenuItems.stream().
+                collect(Collectors.groupingBy(MenuItem::getDish));
 
         List<DishHistory> dishHistory = new ArrayList<>();
         for (Map.Entry<Dish, List<MenuItem>> entry : allMenuItemsGroupingByDish.entrySet()) {

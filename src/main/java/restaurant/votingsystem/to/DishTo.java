@@ -2,12 +2,10 @@ package restaurant.votingsystem.to;
 
 public class DishTo extends BaseTo {
     private String description;
-    private double price;
 
-    public DishTo(Integer id, String description, double price) {
+    public DishTo(Integer id, String description) {
         super(id);
         this.description = description;
-        this.price = price;
     }
 
     public DishTo(String description) {
@@ -22,11 +20,4 @@ public class DishTo extends BaseTo {
         this.description = description;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 }

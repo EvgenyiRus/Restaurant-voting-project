@@ -21,7 +21,6 @@ public class Dish extends AbstractBaseEntity{
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "dish")
     @OrderBy("date DESC")
-    //@BatchSize(size = 20)
     private List<MenuItem> menuItems;
 
     public String getDescription() {

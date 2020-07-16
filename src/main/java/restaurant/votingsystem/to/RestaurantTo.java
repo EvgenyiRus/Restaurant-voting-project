@@ -4,12 +4,12 @@ import java.util.List;
 
 public class RestaurantTo extends BaseTo {
     private String name;
-    private List<DishTo> dishes;
+    private List<MenuItemTo> menuItems;
 
-    public RestaurantTo(Integer id, String name, List<DishTo> dishes) {
+    public RestaurantTo(Integer id, String name, List<MenuItemTo> menuItems) {
         super(id);
         this.name = name;
-        this.dishes = dishes;
+        this.menuItems = menuItems;
     }
 
     public RestaurantTo(Integer id,String name) {
@@ -25,12 +25,12 @@ public class RestaurantTo extends BaseTo {
         this.name = name;
     }
 
-    public List<DishTo> getDishes() {
-        return dishes;
+
+    public List<MenuItemTo> getMenuItems() {
+        return menuItems;
     }
 
-    public void setDishes(List<DishTo> dishes) {
-        this.dishes = dishes;
+    public void setMenuItems(List<MenuItemTo> menuItems) {
+        this.menuItems = menuItems;
     }
-
 }

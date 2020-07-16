@@ -6,6 +6,14 @@ public class MenuItemTo extends BaseTo{
     private LocalDate date;
     private double price;
     private RestaurantTo restaurant;
+    private DishTo dish;
+
+    public MenuItemTo(Integer id, LocalDate date, double price, DishTo dish) {
+        super(id);
+        this.date = date;
+        this.price = price;
+        this.dish = dish;
+    }
 
     public MenuItemTo(Integer id, LocalDate date, double price, RestaurantTo restaurant) {
         super(id);
@@ -37,4 +45,8 @@ public class MenuItemTo extends BaseTo{
     public void setRestaurant(RestaurantTo restaurant) {
         this.restaurant = restaurant;
     }
+
+    public DishTo getDish() { return dish; }
+
+    public void setDish(DishTo dish) { this.dish = dish; }
 }
