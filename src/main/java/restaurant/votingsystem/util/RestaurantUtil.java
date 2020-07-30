@@ -25,13 +25,6 @@ public class RestaurantUtil {
         List<RestaurantTo> restaurantTos = new ArrayList<>();
         for (Map.Entry<Restaurant, List<MenuItem>> entry : allMenuItemsGroupingByRestaurant.entrySet()) {
             List<MenuItemTo> menuItemTos=getMenusByRestaurant(entry.getValue());
-//                    entry.getValue().stream().map(menuItem ->
-//                            new MenuItemTo(
-//                                    menuItem.getId(),
-//                                    menuItem.getDate(),
-//                                    menuItem.getPrice(),
-//                                    new DishTo(menuItem.getDish().getId(),menuItem.getDish().getDescription())
-//                            )).collect(Collectors.toList());
 
             restaurantTos.add(new RestaurantTo(
                     entry.getKey().getId(),

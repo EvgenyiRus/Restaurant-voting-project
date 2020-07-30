@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.MenuItem;
@@ -41,28 +42,38 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public Restaurant get(@PathVariable int id) throws NotFoundException{
+    public Restaurant get(@PathVariable int id) throws NotFoundException {
         log.info("Get restaurant with id={} ", id);
-        return restaurantRepository.findById(id).orElseThrow(
-                () -> new NotFoundException("No restaurant found with id={} " + id));
+        return restaurantRepository.findById(id).orElseThrow(null);
+        //() -> new NotFoundException("No restaurant found with id={} " + id));
     }
 
     @GetMapping("/menus")
-    public List<RestaurantTo> getAllMenusTo() {
+    public List<RestaurantTo> getAllMenus() {
         log.info("Get menus of all restaurants");
         return RestaurantUtil.getRestaurantsMenus(menuItemRepository.getAllMenus(LocalDate.now()));
     }
 
     @GetMapping("/{id}/menus")
-    public List<MenuItemTo> getWithMenu(@PathVariable int id) {
+    public List<MenuItemTo> getAllMenusByRestaurant(@PathVariable int id) {
         log.info("Get menu from restaurant with id={}", id);
         return RestaurantUtil.getMenusByRestaurant(menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now()));
     }
 
-    @GetMapping("/{id}/menusID")
-    public List<MenuItem> getWithMenuID(@PathVariable int id) {
-        log.info("Get menu from restaurant with id={}", id);
-        return menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
+    @GetMapping("/{id}/menus/{menuItemId}")
+    public MenuItemTo getMenuItemByRestaurant(@PathVariable int id, @PathVariable int menuItemId) {
+        log.info("Get menu item with id={}", menuItemId);
+        MenuItem menuitem = menuItemRepository.findById(menuItemId).orElse(null);
+        if (menuitem == null) return null;
+        if (id != menuitem.getRestaurant().id()) return null;
+        return new MenuItemTo(
+                menuitem.getId(),
+                menuitem.getDate(),
+                menuitem.getPrice(),
+                new DishTo(
+                        menuitem.getDish().getDescription()
+                )
+        );
     }
 
     @DeleteMapping("/{id}")
@@ -72,9 +83,16 @@ public class RestaurantController {
         restaurantRepository.delete(id);
     }
 
+    @DeleteMapping("/{id}/menus/{menuItemId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteMenuItem(@PathVariable int id, @PathVariable int menuItemId) {
+        log.info("MenuItem with menuItemId={} by restaurant with id={} was deleted", menuItemId, id);
+        menuItemRepository.delete(menuItemId, id);
+    }
+
     //Add restaurant
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant) {
         log.info("New restaurant was added");
         Restaurant created = restaurantRepository.save(restaurant);
 
@@ -87,9 +105,12 @@ public class RestaurantController {
 
     //Add menuItem
     @PostMapping(value = "/{id}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MenuItem> createWithLocation(@RequestBody MenuItem menuItem, @PathVariable int id) {
-        log.info("New menu item for restaurant with id={} was added",id);
-        menuItem.setRestaurant(restaurantRepository.findById(id).orElseThrow());
+    public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItem menuItem, @PathVariable int id) {
+        log.info("New menu item for restaurant with id={} was added", id);
+        //menuItem.setRestaurant(restaurantRepository.getOne(id)); //getOne помогает убрать лишний запрос на поиск нужного ресторана
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(null);
+        if (restaurant == null) return null;
+        menuItem.setRestaurant(restaurant);
         menuItemRepository.save(menuItem);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -99,6 +120,7 @@ public class RestaurantController {
         return ResponseEntity.created(uriOfNewResource).body(menuItem);
     }
 
+    //Edit Restaurant
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
@@ -107,12 +129,36 @@ public class RestaurantController {
         restaurantRepository.save(restaurant);
     }
 
-    @PutMapping(value = "/{restaurantId}/menus/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    //Edit MenuItem
+    @PutMapping(value = "/{id}/menus/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody MenuItem menuItem, @PathVariable int restaurantId, @PathVariable int menuItemId) {
-        log.info("Menu item with id={} for restaurant was updated", menuItem.getId());
-        menuItem.setRestaurant(restaurantRepository.findById(restaurantId).orElseThrow());
-        menuItem.setId(menuItemId);
-        menuItemRepository.save(menuItem);
+    public void updateMenuItem(@RequestBody MenuItem menuItem, @PathVariable int id, @PathVariable int menuItemId) {
+        log.info("Menuitem with menuItemId={} for restaurant with id={} was updated", menuItemId, id);
+
+        //int menuIemIdByRestaurant = menuItemRepository.getMenuItemByRestaurant(menuItemId, id).getRestaurant().getId();
+        //if (id == menuIemIdByRestaurant) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(null);
+        if (restaurant != null) {
+            menuItem.setRestaurant(restaurant);
+            menuItem.setId(menuItemId);
+            if (get(menuItem.getId(), menuItem.getRestaurant().getId()) != null)
+                menuItemRepository.save(menuItem);
+        }
+    }
+
+    //For Service
+    @Transactional
+    public MenuItem save(MenuItem menuItem, int restaurantId) {
+        if (!menuItem.isNew() && get(menuItem.id(), restaurantId) == null) {
+            return null;
+        }
+        menuItem.setRestaurant(restaurantRepository.getOne(restaurantId));
+        return menuItemRepository.save(menuItem);
+    }
+
+    public MenuItem get(int menuItemId, int restaurantId) {
+        return menuItemRepository.findById(menuItemId)
+                .filter(menuItem ->
+                        menuItem.getRestaurant().getId() == restaurantId).orElse(null);
     }
 }
