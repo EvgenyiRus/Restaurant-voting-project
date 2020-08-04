@@ -1,4 +1,6 @@
-package restaurant.votingsystem.to;
+package restaurant.votingsystem.web.dish;
+
+import restaurant.votingsystem.to.MenuItemTo;
 
 import java.util.List;
 

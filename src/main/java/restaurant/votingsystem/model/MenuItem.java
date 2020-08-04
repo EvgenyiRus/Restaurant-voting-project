@@ -12,9 +12,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"date","restaurant_id","dish_id"},
+@Table(name = "menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "restaurant_id", "dish_id"},
         name = " menus_items_idx")})
-public class MenuItem {
+public class MenuItem implements HasId {
     @Id
     @SequenceGenerator(name = "MENU_ITEMS_SEQ", sequenceName = "MENU_ITEMS_SEQ", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MENU_ITEMS_SEQ")
@@ -32,7 +32,7 @@ public class MenuItem {
     @Fetch(FetchMode.JOIN)
     private Dish dish;
 
-    @Column(name = "price", nullable = false,columnDefinition = "Integer default 0")
+    @Column(name = "price", nullable = false, columnDefinition = "Integer default 0")
     @NotNull
     @Range(min = 0, max = 99999)
     private double price;

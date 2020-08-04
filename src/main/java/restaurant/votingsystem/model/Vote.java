@@ -9,7 +9,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name = "votes")
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "datetime"},
+        name = "vote_idx")})
 public class Vote {
 
     @Id

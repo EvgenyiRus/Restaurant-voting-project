@@ -57,7 +57,9 @@ public class RestaurantController {
     @GetMapping("/{id}/menus")
     public List<MenuItemTo> getAllMenusByRestaurant(@PathVariable int id) {
         log.info("Get menu from restaurant with id={}", id);
-        return RestaurantUtil.getMenusByRestaurant(menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now()));
+        return RestaurantUtil.getMenusByRestaurant(
+                menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now())
+        );
     }
 
     @GetMapping("/{id}/menus/{menuItemId}")
@@ -107,8 +109,7 @@ public class RestaurantController {
     @PostMapping(value = "/{id}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItem menuItem, @PathVariable int id) {
         log.info("New menu item for restaurant with id={} was added", id);
-        //menuItem.setRestaurant(restaurantRepository.getOne(id)); //getOne помогает убрать лишний запрос на поиск нужного ресторана
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(null);
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow();
         if (restaurant == null) return null;
         menuItem.setRestaurant(restaurant);
         menuItemRepository.save(menuItem);
@@ -134,9 +135,6 @@ public class RestaurantController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void updateMenuItem(@RequestBody MenuItem menuItem, @PathVariable int id, @PathVariable int menuItemId) {
         log.info("Menuitem with menuItemId={} for restaurant with id={} was updated", menuItemId, id);
-
-        //int menuIemIdByRestaurant = menuItemRepository.getMenuItemByRestaurant(menuItemId, id).getRestaurant().getId();
-        //if (id == menuIemIdByRestaurant) {
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(null);
         if (restaurant != null) {
             menuItem.setRestaurant(restaurant);

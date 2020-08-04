@@ -25,10 +25,6 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
             "where mi.dish.id=:id order by mi.date desc")
     List<MenuItem> getHistoryDish(@Param("id") Integer id);
 
-    @Query("SELECT mi FROM MenuItem mi JOIN FETCH mi.dish JOIN FETCH mi.restaurant " +
-            "where mi.id=:id and mi.restaurant.id=:restaurantId")
-    MenuItem getMenuItemByRestaurant(@Param("id") Integer id, @Param("restaurantId") int restaurantId);
-
     @Transactional
     @Modifying
     @Query("DELETE FROM MenuItem m WHERE m.id=:id and m.restaurant.id=:restaurantId")

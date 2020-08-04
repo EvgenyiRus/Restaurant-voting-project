@@ -2,7 +2,7 @@ package restaurant.votingsystem.util;
 
 import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
-import restaurant.votingsystem.to.DishHistory;
+import restaurant.votingsystem.web.dish.DishHistory;
 import restaurant.votingsystem.to.MenuItemTo;
 import restaurant.votingsystem.to.RestaurantTo;
 

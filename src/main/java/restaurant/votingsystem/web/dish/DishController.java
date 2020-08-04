@@ -1,4 +1,4 @@
-package restaurant.votingsystem.web;
+package restaurant.votingsystem.web.dish;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
-import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.repository.DishRepository;
 import restaurant.votingsystem.repository.MenuItemRepository;
-import restaurant.votingsystem.to.DishHistory;
 import restaurant.votingsystem.util.DishHistoryUtil;
 
+import javax.annotation.security.RolesAllowed;
 import java.net.URI;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class DishController {
 
     @GetMapping
     public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
-        log.info("Get all dishes that the description contains '{}'",description);
+        log.info("Get all dishes or that the description contains '{}'",description);
         if (!isBlank(description)) {
             return dishRepository.getAllByDescription(description.toLowerCase());
         }

@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import restaurant.votingsystem.model.Dish;
-import restaurant.votingsystem.to.DishHistory;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
 package restaurant.votingsystem.util;
 
-import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.to.DishTo;
