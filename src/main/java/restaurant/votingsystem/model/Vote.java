@@ -6,22 +6,22 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "datetime"},
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"},
         name = "vote_idx")})
-public class Vote {
+public class Vote implements HasId{
 
     @Id
     @SequenceGenerator(name = "VOTE_SEQ", sequenceName = "VOTE_SEQ", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTE_SEQ")
     private Integer id;
 
-    @Column(name = "datetime", nullable = false, columnDefinition = "DATE default now")
+    @Column(name = "date", nullable = false, columnDefinition = "DATE default now")
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date date = new Date();
+    private LocalDate date = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -38,6 +38,18 @@ public class Vote {
     public Vote() {
     }
 
+    public Vote(Integer id,@NotNull LocalDate date, @NotNull Restaurant restaurant) {
+        this.id=id;
+        this.date = date;
+        this.restaurant = restaurant;
+    }
+
+    public Vote(Integer id,@NotNull LocalDate date, @NotNull User user) {
+        this.id=id;
+        this.date = date;
+        this.user = user;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -46,11 +58,11 @@ public class Vote {
         this.id = id;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

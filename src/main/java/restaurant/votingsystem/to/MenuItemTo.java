@@ -8,7 +8,7 @@ public class MenuItemTo extends BaseTo{
     private RestaurantTo restaurant;
     private DishTo dish;
 
-    public MenuItemTo(Integer id, LocalDate date, double price, DishTo dish) {
+    public MenuItemTo(Integer id, LocalDate date, DishTo dish, double price) {
         super(id);
         this.date = date;
         this.price = price;

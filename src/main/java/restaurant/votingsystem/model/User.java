@@ -9,10 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
@@ -48,19 +45,17 @@ public class User extends AbstractBaseEntity implements Serializable {
     public User() {
     }
 
-    public User(User u) {
-        this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getRoles());
-    }
-
-    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
-        this(id, name, email, password, EnumSet.of(role, roles));
-    }
-
-    public User(Integer id, String name, String email, String password, Collection<Role> roles) {
+    public User(Integer id, String name, String email, String password) {
         super(id);
+        this.name = name;
         this.email = email;
         this.password = password;
-        setRoles(roles);
+    }
+
+    public User(Integer id, String name, String email) {
+        super(id);
+        this.name = name;
+        this.email = email;
     }
 
     public String getEmail() {
@@ -68,7 +63,7 @@ public class User extends AbstractBaseEntity implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.toLowerCase();
     }
 
     public void setPassword(String password) {
@@ -84,7 +79,7 @@ public class User extends AbstractBaseEntity implements Serializable {
     }
 
     public void setRoles(Collection<Role> roles) {
-        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+        this.roles = CollectionUtils.isEmpty(roles) ? Collections.singleton(Role.USER) : EnumSet.copyOf(roles);
     }
 
     public String getName() {

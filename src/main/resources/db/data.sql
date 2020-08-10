@@ -84,18 +84,15 @@ INSERT INTO user_roles (role, user_id) VALUES
 ('USER', 100020),
 ('USER', 100021);
 
-INSERT INTO VOTES (datetime,RESTAURANT_ID,USER_ID) VALUES
+INSERT INTO VOTES (date,RESTAURANT_ID,USER_ID) VALUES
         (now,100014,100000),
-        (now,100014,100018),
-        (now,100014,100019),
-        (now,100014,100020),
-        (now,100015,100021),
+        (now,100014,100001),
         (date_add(now,-1),100014,100000),
         (date_add(now,-1),100015,100018),
         (date_add(now,-1),100015,100019),
         (date_add(now,-1),100016,100020),
         (date_add(now,-1),100016,100021),
-        (date_add(now,-1),100017,100000),
+        (date_add(now,-2),100017,100000),
         (date_add(now,-2),100017,100018),
         (date_add(now,-2),100014,100019),
         (date_add(now,-2),100016,100020),

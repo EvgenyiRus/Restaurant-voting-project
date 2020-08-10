@@ -13,7 +13,6 @@ import restaurant.votingsystem.repository.DishRepository;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.util.DishHistoryUtil;
 
-import javax.annotation.security.RolesAllowed;
 import java.net.URI;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class DishController {
 
     @GetMapping
     public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
-        log.info("Get all dishes or that the description contains '{}'",description);
+        log.info("Get all dishes or that the description contains '{}'", description);
         if (!isBlank(description)) {
             return dishRepository.getAllByDescription(description.toLowerCase());
         }
@@ -48,7 +47,7 @@ public class DishController {
 
     @GetMapping("/{id}/history")
     public List<DishHistory> getHistory(@PathVariable int id) {
-        log.info("Get history dish with id='{}'",id);
+        log.info("Get history dish with id='{}'", id);
         return DishHistoryUtil.getHistoryDish(menuItemRepository.getHistoryDish(id));
     }
 

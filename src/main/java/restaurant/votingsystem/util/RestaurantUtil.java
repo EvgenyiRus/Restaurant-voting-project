@@ -23,26 +23,30 @@ public class RestaurantUtil {
 
         List<RestaurantTo> restaurantTos = new ArrayList<>();
         for (Map.Entry<Restaurant, List<MenuItem>> entry : allMenuItemsGroupingByRestaurant.entrySet()) {
-            List<MenuItemTo> menuItemTos=getMenusByRestaurant(entry.getValue());
+            List<MenuItemTo> menuItemTos = getMenusByRestaurant(entry.getValue());
 
-            restaurantTos.add(new RestaurantTo(
-                    entry.getKey().getId(),
-                    entry.getKey().getName(),
-                    menuItemTos));
+            restaurantTos.add(
+                    new RestaurantTo(
+                            entry.getKey().getId(),
+                            entry.getKey().getName(),
+                            menuItemTos)
+            );
         }
         return restaurantTos;
     }
 
     public static List<MenuItemTo> getMenusByRestaurant(Collection<MenuItem> restaurantsMenuItems) {
-        List<MenuItemTo> menuItemTos=restaurantsMenuItems.stream()
+        List<MenuItemTo> menuItemTos = restaurantsMenuItems.stream()
                 .map(menuItem ->
                         new MenuItemTo(
                                 menuItem.getId(),
                                 menuItem.getDate(),
-                                menuItem.getPrice(),
-                                new DishTo(menuItem.getDish().getId(),menuItem.getDish().getDescription())
+                                new DishTo(
+                                        menuItem.getDish().getId(),
+                                        menuItem.getDish().getDescription()
+                                ),
+                                menuItem.getPrice()
                         )).collect(Collectors.toList());
         return menuItemTos;
     }
-
 }
