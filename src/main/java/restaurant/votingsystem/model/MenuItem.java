@@ -48,6 +48,14 @@ public class MenuItem implements HasId {
     public MenuItem() {
     }
 
+    public MenuItem(Integer id, LocalDate date, Dish dish, double price, Restaurant restaurant) {
+        this.id = id;
+        this.date = date;
+        this.dish = dish;
+        this.price = price;
+        this.restaurant = restaurant;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -86,5 +94,15 @@ public class MenuItem implements HasId {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    @Override
+    public String toString() {
+        return "MenuItem{" +
+                "date=" + date +
+                ", dish=" + dish +
+                ", price=" + price +
+                ", restaurant=" + restaurant +
+                '}';
     }
 }

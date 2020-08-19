@@ -48,10 +48,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/profile").hasRole("USER")
+                .antMatchers("/admin/**","/dishes/**").hasRole("ADMIN")
+                .antMatchers("/profile/**","/restaurants/**","/votes/**").hasRole("USER")
                 //Доступ разрешен анонимным пользователям и всем авторизированным
-                //.antMatchers("/register","/restaurants/menus", "/restaurants/votes").permitAll()
+                .antMatchers("/restaurants/menus").permitAll()
                 .antMatchers("/profile/register").anonymous()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest()

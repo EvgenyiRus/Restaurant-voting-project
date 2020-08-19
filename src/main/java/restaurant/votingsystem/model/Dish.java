@@ -23,6 +23,11 @@ public class Dish extends AbstractBaseEntity{
     @OrderBy("date DESC")
     private List<MenuItem> menuItems;
 
+    public Dish(Integer id, @NotBlank @Size(max = 100) String description) {
+        super(id);
+        this.description = description;
+    }
+
     public String getDescription() {
         return description;
     }

@@ -12,13 +12,13 @@ import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.repository.RestaurantRepository;
-import restaurant.votingsystem.repository.UserRepository;
-import restaurant.votingsystem.repository.VoteRepository;
 import restaurant.votingsystem.to.DishTo;
 import restaurant.votingsystem.to.MenuItemTo;
 import restaurant.votingsystem.to.RestaurantTo;
 import restaurant.votingsystem.util.RestaurantUtil;
+import restaurant.votingsystem.util.exception.NotFoundException;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -35,12 +35,6 @@ public class RestaurantController {
     @Autowired
     MenuItemRepository menuItemRepository;
 
-    @Autowired
-    VoteRepository voteRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("Get all restaurants");
@@ -51,8 +45,9 @@ public class RestaurantController {
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
         log.info("Get restaurant with id={} ", id);
+//        return restaurantRepository.findById(id).orElseThrow(
+//                ()->new NotFoundException("No restaurant found with id="+id));
         return restaurantRepository.findById(id).orElseThrow();
-        //() -> new NotFoundException("No restaurant found with id={} " + id));
     }
 
     //get all menus restaurants
@@ -107,7 +102,7 @@ public class RestaurantController {
     //Add restaurant
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant) {
-        log.info("New restaurant was added");
+        log.info("New restaurant {} was added",restaurant.getName());
         Restaurant created = restaurantRepository.save(restaurant);
 
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

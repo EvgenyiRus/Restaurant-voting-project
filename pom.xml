@@ -29,12 +29,11 @@
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
 
-        <!--DB-->
-        <postgresql.version>42.2.10</postgresql.version>
         <!--    Tests  -->
         <junit.jupiter.version>5.6.1</junit.jupiter.version>
 <!--        <hamcrest.version>1.3</hamcrest.version>-->
         <json-path.version>2.4.0</json-path.version>
+        <mockito.version>2.24.0</mockito.version>
 
         <!-- Hibernate -->
         <hibernate.version>5.4.12.Final</hibernate.version>
@@ -62,6 +61,8 @@
             <version>${logback.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!--   spring boot     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -102,7 +103,6 @@
             <scope>provided</scope>
         </dependency>
 
-
         <!--BD-->
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -110,30 +110,39 @@
             <version>2.4.0</version>
         </dependency>
 
+        <!--Tests-->
+        <!-- exclude junit 4 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
+                    <groupId>org.junit</groupId>
+                    <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hibernate5</artifactId>
-            <version>2.10.3</version>
-        </dependency>
 
-        <!--Tests-->
+        <!-- junit 5 -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hamcrest</groupId>-->
+<!--            <artifactId>hamcrest-core</artifactId>-->
+<!--            <version>${hamcrest.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <!--security-->
         <dependency>
@@ -141,6 +150,17 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+            <version>2.10.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>5.3.2.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

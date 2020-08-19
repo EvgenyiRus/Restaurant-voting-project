@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
     static final String REST_URL = "/votes";
-    static final LocalTime TIME_VOTE = LocalTime.of(11, 00, 00);
+    static final LocalTime TIME_VOTE = LocalTime.of(23, 59, 00);
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -55,13 +55,34 @@ public class VoteController {
         );
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> createVote(@RequestBody Vote vote, @AuthenticationPrincipal AuthorizedUser authUser) {
+//    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Vote> createVote(@RequestBody Vote vote, @AuthenticationPrincipal AuthorizedUser authUser) {
+//        if (LocalTime.now().isBefore(TIME_VOTE)) {
+//            log.info("User {} voted for restaurant with id={}", authUser.getUsername(), vote.getRestaurant().getId());
+//            Restaurant restaurant = restaurantRepository.findById(vote.getRestaurant().getId()).orElseThrow();
+//            User user = userRepository.findById(authUser.getId()).orElseThrow();
+//            if (restaurant == null || user == null) return null;
+//            vote.setUser(user);
+//            vote.setRestaurant(restaurant);
+//            voteRepository.save(vote);
+//        }
+//        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path(REST_URL + "/{id}")
+//                .buildAndExpand(vote.getId()).toUri();
+//
+//        return ResponseEntity.created(uriOfNewResource).body(vote);
+//    }
+
+    @PostMapping(value = "/restaurants/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Vote> createVote(@PathVariable int id, @AuthenticationPrincipal AuthorizedUser authUser) {
+        Vote vote = new Vote();
         if (LocalTime.now().isBefore(TIME_VOTE)) {
-            log.info("User {} voted for restaurant with id={}", authUser.getUsername(), vote.getRestaurant().getId());
-            Restaurant restaurant = restaurantRepository.findById(vote.getRestaurant().getId()).orElseThrow();
-            User user = userRepository.findById(authUser.getId()).orElseThrow();
-            if (restaurant == null || user == null) return null;
+            log.info("User {} voted for restaurant with id={}", authUser.getUsername(), id);
+            Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+            User user = userRepository.findById(authUser.getId()).orElse(null);
+            if (restaurant == null || user == null) {
+                return null;
+            }
             vote.setUser(user);
             vote.setRestaurant(restaurant);
             voteRepository.save(vote);
@@ -71,18 +92,32 @@ public class VoteController {
                 .buildAndExpand(vote.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(vote);
+
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/restaurants/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateVote(@RequestBody Vote vote, @AuthenticationPrincipal AuthorizedUser authUser) {
+    public void updateVote(@PathVariable int id, @AuthenticationPrincipal AuthorizedUser authUser) {
         if (LocalTime.now().isBefore(TIME_VOTE)) {
-            log.info("User {} changed vote with id={}", authUser.getUsername(), vote.getRestaurant().getId());
+            log.info("User {} changed vote", authUser.getUsername());
             Vote editVote = voteRepository.getVoteByUserToDay(authUser.getId(), LocalDate.now());
-            if (editVote != null) {
-                editVote.setRestaurant(vote.getRestaurant());
+            Restaurant restaurant = restaurantRepository.findById(id).orElse(null);
+            if (editVote != null && restaurant != null) {
+                editVote.setRestaurant(restaurant);
                 voteRepository.save(editVote);
             }
         }
     }
+//    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+//    public void updateVote(@RequestBody Vote vote, @AuthenticationPrincipal AuthorizedUser authUser) {
+//        if (LocalTime.now().isBefore(TIME_VOTE)) {
+//            log.info("User {} changed vote with id={}", authUser.getUsername(), vote.getRestaurant().getId());
+//            Vote editVote = voteRepository.getVoteByUserToDay(authUser.getId(), LocalDate.now());
+//            if (editVote != null) {
+//                editVote.setRestaurant(vote.getRestaurant());
+//                voteRepository.save(editVote);
+//            }
+//        }
+//    }
 }

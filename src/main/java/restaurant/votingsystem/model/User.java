@@ -52,6 +52,18 @@ public class User extends AbstractBaseEntity implements Serializable {
         this.password = password;
     }
 
+    public User(Integer id, String name, String email, String password, Role role, Role... roles) {
+        this(id, name, email, password, EnumSet.of(role, roles));
+    }
+
+    public User(Integer id, String name, String email, String password, Collection<Role> roles) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        setRoles(roles);
+    }
+
     public User(Integer id, String name, String email) {
         super(id);
         this.name = name;

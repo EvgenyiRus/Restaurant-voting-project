@@ -56,6 +56,7 @@ public class AdminController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> createWithLocation(@RequestBody User user) {
         log.info("New user '{}' was added", user.getName());
         User created = UserUtil.prepareToSave(user,user.getRoles());
@@ -74,67 +75,4 @@ public class AdminController {
         user.setId(id);
         userRepository.save(user);
     }
-
-//    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
-//        User created = super.create(userTo);
-//        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path(REST_URL).build().toUri();
-//        return ResponseEntity.created(uriOfNewResource).body(created);
-//    }
-//
-//    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void update(@RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) throws BindException {
-//        checkAndValidateForUpdate(userTo, authUser.getId());
-//        service.update(userTo);
-//    }
-
-    //admin
-    /* @GetMapping
-    public List<User> getAll() {
-        return super.getAll();
-    }
-
-    @Override
-    @GetMapping("/{id}")
-    public User get(@PathVariable int id) {
-        return super.get(id);
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@Validated(View.Web.class) @RequestBody User user) {
-        User created = super.create(user);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}")
-                .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    @Override
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
-        super.delete(id);
-    }
-
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable int id) throws BindException {
-        checkAndValidateForUpdate(user, id);
-        service.update(user);
-    }
-
-    @GetMapping("/by")
-    public User getByMail(@RequestParam String email) {
-        return super.getByMail(email);
-    }
-
-    @Override
-    @PatchMapping("/{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
-        super.enable(id, enabled);
-    }*/
 }
