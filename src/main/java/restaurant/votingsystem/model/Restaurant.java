@@ -7,8 +7,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
-@Table(name="restaurants")
-public class Restaurant extends AbstractBaseEntity{
+@Table(name = "restaurants")
+public class Restaurant extends AbstractBaseEntity {
 
     @Column(name = "name", nullable = false, unique = true)
     @NotBlank
@@ -24,6 +24,7 @@ public class Restaurant extends AbstractBaseEntity{
         super(id);
         this.name = name;
     }
+
     public String getName() {
         return name;
     }
@@ -39,13 +40,5 @@ public class Restaurant extends AbstractBaseEntity{
 
     public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
-    }
-
-    @Override
-    public String toString() {
-        return "Restaurant{" +
-                "name='" + name + '\'' +
-                ", menuItems=" + menuItems +
-                '}';
     }
 }

@@ -1,25 +1,39 @@
 package restaurant.votingsystem.to;
 
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public class MenuItemTo extends BaseTo{
-    private LocalDate date;
-    private double price;
-    private RestaurantTo restaurant;
-    private DishTo dish;
+public class MenuItemTo extends BaseTo {
 
-    public MenuItemTo(Integer id, LocalDate date, DishTo dish, double price) {
+    private LocalDate date;
+
+    @NotNull
+    @Range(min = 0, max = 99999)
+    private double price;
+
+    @NotNull
+    private int restaurantId;
+
+    @NotNull
+    private int dishId;
+
+    public MenuItemTo(Integer id, LocalDate date, int dishId, double price) {
         super(id);
         this.date = date;
         this.price = price;
-        this.dish = dish;
+        this.dishId = dishId;
     }
 
-    public MenuItemTo(Integer id, LocalDate date, double price, RestaurantTo restaurant) {
+    public MenuItemTo(Integer id, LocalDate date, double price, int restaurantId) {
         super(id);
         this.date = date;
         this.price = price;
-        this.restaurant = restaurant;
+        this.restaurantId = restaurantId;
+    }
+
+    public MenuItemTo() {
     }
 
     public LocalDate getDate() {
@@ -38,15 +52,19 @@ public class MenuItemTo extends BaseTo{
         this.price = price;
     }
 
-    public RestaurantTo getRestaurant() {
-        return restaurant;
+    public int getRestaurantId() {
+        return restaurantId;
     }
 
-    public void setRestaurant(RestaurantTo restaurant) {
-        this.restaurant = restaurant;
+    public void setRestaurant(int restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
-    public DishTo getDish() { return dish; }
+    public int getDishId() {
+        return dishId;
+    }
 
-    public void setDish(DishTo dish) { this.dish = dish; }
+    public void setDishId(int dishId) {
+        this.dishId = dishId;
+    }
 }

@@ -16,6 +16,8 @@ import restaurant.votingsystem.repository.RestaurantRepository;
 import restaurant.votingsystem.repository.UserRepository;
 import restaurant.votingsystem.repository.VoteRepository;
 import restaurant.votingsystem.util.VoteUtil;
+import restaurant.votingsystem.util.exception.NotFoundException;
+import restaurant.votingsystem.util.exception.NotSuchElementException;
 import restaurant.votingsystem.web.user.AuthorizedUser;
 
 import java.net.URI;
@@ -27,7 +29,7 @@ import java.util.List;
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
     static final String REST_URL = "/votes";
-    static final LocalTime TIME_VOTE = LocalTime.of(23, 59, 00);
+    static final LocalTime TIME_VOTE = LocalTime.of(11, 00, 00);
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -48,10 +50,11 @@ public class VoteController {
     }
 
     @GetMapping("/restaurants/{id}")
-    public List<Vote> getAllVotes(@PathVariable int id) {
-        log.info("Get users who vote for restaurant with id={}", id);
+    public List<Vote> getAllForRestaurants(@PathVariable int id) {
+        log.info("Get users who was voted for restaurant with id={}", id);
         return VoteUtil.getVotedUsers(
-                voteRepository.getAllVotesByRestaurant(id, LocalDate.now())
+                voteRepository.getAllVotesByRestaurant(id, LocalDate.now()).orElseThrow(
+                        () -> new NotSuchElementException(new String[]{"restaurant", String.valueOf(id)}))
         );
     }
 
@@ -92,7 +95,6 @@ public class VoteController {
                 .buildAndExpand(vote.getId()).toUri();
 
         return ResponseEntity.created(uriOfNewResource).body(vote);
-
     }
 
     @PutMapping(value = "/restaurants/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

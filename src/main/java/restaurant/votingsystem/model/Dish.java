@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = "description",
         name = "dishes_unique_description_idx")})
-public class Dish extends AbstractBaseEntity{
+public class Dish extends AbstractBaseEntity {
     public Dish() {
     }
 

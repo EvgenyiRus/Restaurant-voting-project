@@ -1,12 +1,14 @@
 package restaurant.votingsystem.to;
 
+import restaurant.votingsystem.model.MenuItem;
+
 import java.util.List;
 
 public class RestaurantTo extends BaseTo {
     private String name;
-    private List<MenuItemTo> menuItems;
+    private List<MenuItem> menuItems;
 
-    public RestaurantTo(Integer id, String name, List<MenuItemTo> menuItems) {
+    public RestaurantTo(Integer id, String name, List<MenuItem> menuItems) {
         super(id);
         this.name = name;
         this.menuItems = menuItems;
@@ -26,11 +28,11 @@ public class RestaurantTo extends BaseTo {
     }
 
 
-    public List<MenuItemTo> getMenuItems() {
+    public List<MenuItem> getMenuItems() {
         return menuItems;
     }
 
-    public void setMenuItems(List<MenuItemTo> menuItems) {
+    public void setMenuItems(List<MenuItem> menuItems) {
         this.menuItems = menuItems;
     }
 }

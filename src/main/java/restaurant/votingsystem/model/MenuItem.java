@@ -6,7 +6,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -48,10 +47,24 @@ public class MenuItem implements HasId {
     public MenuItem() {
     }
 
-    public MenuItem(Integer id, LocalDate date, Dish dish, double price, Restaurant restaurant) {
+    public MenuItem(Integer id, LocalDate date, double price, Dish dish, Restaurant restaurant) {
         this.id = id;
         this.date = date;
         this.dish = dish;
+        this.price = price;
+        this.restaurant = restaurant;
+    }
+
+    public MenuItem(Integer id, LocalDate date, double price, Dish dish) {
+        this.id = id;
+        this.date = date;
+        this.dish = dish;
+        this.price = price;
+    }
+
+    public MenuItem(Integer id, LocalDate date, double price, Restaurant restaurant) {
+        this.id = id;
+        this.date = date;
         this.price = price;
         this.restaurant = restaurant;
     }

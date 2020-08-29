@@ -17,11 +17,11 @@ public class TestData {
     public static final User USER = new User(100000, "User", "user@yandex.ru", "password", Role.USER);
     public static final User ADMIN = new User(100001, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
 
-    public static final List<MenuItem> MENU_ITEMS_RESTAURANT = List.of(
-            new MenuItem(1, LocalDate.now(), DISH, 255, RESTAURANT),
-            new MenuItem(2, LocalDate.now(), DISH1, 500.65, RESTAURANT),
-            new MenuItem(3, LocalDate.now(), DISH2, 100, RESTAURANT),
-            new MenuItem(4, LocalDate.now(), DISH3, 150.34, RESTAURANT)
+    public static final List<MenuItem> MENU_ITEMS_RESTAURANT  = List.of(
+            new MenuItem(1, LocalDate.now(), 255, DISH, RESTAURANT),
+            new MenuItem(2, LocalDate.now(), 500.65, DISH1, RESTAURANT),
+            new MenuItem(3, LocalDate.now(), 100, DISH2, RESTAURANT),
+            new MenuItem(4, LocalDate.now(), 150.34, DISH3, RESTAURANT)
     );
 
     public static final List<Vote> VOTES_USER = List.of(

@@ -25,13 +25,8 @@ public class DishHistoryUtil {
         for (Map.Entry<Dish, List<MenuItem>> entry : allMenuItemsGroupingByDish.entrySet()) {
             List<MenuItemTo> menuItemTos=entry.getValue().stream()
                     .map(menuItem ->
-                            new MenuItemTo(
-                                    menuItem.getId(),
-                                    menuItem.getDate(),
-                                    menuItem.getPrice(),
-                                    new RestaurantTo(
-                                            menuItem.getRestaurant().getId(),
-                                            menuItem.getRestaurant().getName())))
+                            CreateMenuItemTo(menuItem)
+                    )
                     .collect(Collectors.toList());
 
             dishHistory.add(new DishHistory(
@@ -39,5 +34,14 @@ public class DishHistoryUtil {
                     menuItemTos));
         }
         return dishHistory;
+    }
+
+    public static MenuItemTo CreateMenuItemTo(MenuItem menuItem) {
+        return new MenuItemTo(
+                menuItem.getId(),
+                menuItem.getDate(),
+                menuItem.getPrice(),
+                menuItem.getRestaurant().getId()
+        );
     }
 }
