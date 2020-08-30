@@ -8,7 +8,7 @@ public interface HasId {
 
     void setId(Integer id);
 
-    @JsonIgnore
+    //@JsonIgnore
     default boolean isNew() {
         return getId() == null;
     }

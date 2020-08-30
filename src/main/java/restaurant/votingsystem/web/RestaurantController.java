@@ -14,9 +14,9 @@ import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.DishRepository;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.repository.RestaurantRepository;
-import restaurant.votingsystem.to.MenuItemTo;
 import restaurant.votingsystem.to.RestaurantTo;
 import restaurant.votingsystem.util.RestaurantUtil;
+import restaurant.votingsystem.util.exception.NotContainException;
 import restaurant.votingsystem.util.exception.NotSuchElementException;
 
 import javax.validation.Valid;
@@ -68,6 +68,7 @@ public class RestaurantController {
     @GetMapping("/{id}/menus")
     public List<MenuItem> getAllMenusByRestaurant(@PathVariable int id) {
         log.info("Get menu from restaurant with id={}", id);
+        //todo check restaurant
         List<MenuItem> menuItems = menuItemRepository.getMenuOnDateByRestaurant(id, LocalDate.now());
         return RestaurantUtil.getMenusByRestaurant(menuItems);
     }
@@ -76,11 +77,17 @@ public class RestaurantController {
     @GetMapping("/{id}/menus/{menuItemId}")
     public MenuItem getMenuItemByRestaurant(@PathVariable int id, @PathVariable int menuItemId) {
         log.info("Get menu item with id={}", menuItemId);
+        //todo check restaurant
         MenuItem menuitem = menuItemRepository.findById(menuItemId).orElseThrow(
                 () -> new NotSuchElementException(new String[]{"menu item", String.valueOf(menuItemId)})
         );
         if (id != menuitem.getRestaurant().id()) {
-            return null; //todo create exception not contain
+            throw new NotContainException(
+                    new String[]{
+                            "restaurant with id"
+                            , String.valueOf(id)
+                            , "menu item with id"
+                            , String.valueOf(menuItemId)});
         }
         return RestaurantUtil.getMenuItemByRestaurant(menuitem);
     }
@@ -124,20 +131,17 @@ public class RestaurantController {
 
     //Add menuItem
     @PostMapping(value = "/{id}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MenuItem> createMenuItem(@Valid @RequestBody MenuItemTo menuItem, @PathVariable int id) {
+    public ResponseEntity<MenuItem> createMenuItem(@Valid @RequestBody MenuItem menuItem, @PathVariable int id) {
         log.info("New menu item for restaurant with id={} was added", id);
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
-                () -> new NotSuchElementException(new String[]{"restaurant", String.valueOf(id)}));
         Dish dish = dishRepository.findById(menuItem.getDishId()).orElseThrow(
                 () -> new NotSuchElementException(new String[]{"dish", String.valueOf(menuItem.getDishId())}));
-
         MenuItem created = menuItemRepository.save(
                 new MenuItem(
                         menuItem.getId()
                         , LocalDate.now()
                         , menuItem.getPrice()
-                        , dish
-                        , restaurant
+                        , menuItem.getDishId()
+                        , id
                 )
         );
 
@@ -150,7 +154,7 @@ public class RestaurantController {
                 new MenuItem(created.getId()
                         , created.getDate()
                         , created.getPrice()
-                        , created.getDish()
+                        , dish
                 )
         );
     }
@@ -158,24 +162,34 @@ public class RestaurantController {
     //Edit Restaurant
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
-        log.info("Restaurant with id={} was updated", restaurant.getId());
+    public Restaurant update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
+        log.info("Restaurant with id={} was updated", id);
+        assureIdConsistent(restaurant, id);
         restaurant.setId(id);
-        restaurantRepository.save(restaurant);
+        Restaurant editRestaurant = restaurantRepository.save(restaurant);
+
+        return editRestaurant;
     }
 
     //Edit MenuItem
-    @PutMapping(value = "/{id}/menus/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{restaurantId}/menus/{menuItemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateMenuItem(@Valid @RequestBody MenuItem menuItem, @PathVariable int id, @PathVariable int menuItemId) {
-        log.info("Menuitem with menuItemId={} for restaurant with id={} was updated", menuItemId, id);
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
-                () -> new NotSuchElementException(new String[]{"restaurant", String.valueOf(id)}));
-        menuItem.setRestaurant(restaurant);
-        menuItem.setId(menuItemId);
-        if (findMenuItemByRestaurant(menuItem.getId(), menuItem.getRestaurant().getId()) != null)
-            menuItemRepository.save(menuItem);
-
+    public void updateMenuItem(
+            @Valid @RequestBody MenuItem menuItem,
+            @PathVariable int restaurantId,
+            @PathVariable int menuItemId)
+    {
+        log.info("Menuitem with menuItemId={} for restaurant with id={} was updated", menuItemId, restaurantId);
+        if (findMenuItemByRestaurant(menuItemId, restaurantId) == null) {
+            throw new NotContainException(
+                    new String[]{
+                            "restaurant with id"
+                            , String.valueOf(restaurantId)
+                            , "menu item with id"
+                            , String.valueOf(menuItemId)});
+        }
+        //todo check dish
+        menuItemRepository.update(menuItem.getDishId(), restaurantId, menuItemId, menuItem.getPrice());
     }
 
     //For Service

@@ -1,22 +1,12 @@
 package restaurant.votingsystem.to;
 
-import org.hibernate.validator.constraints.Range;
-
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class MenuItemTo extends BaseTo {
 
     private LocalDate date;
-
-    @NotNull
-    @Range(min = 0, max = 99999)
     private double price;
-
-    @NotNull
     private int restaurantId;
-
-    @NotNull
     private int dishId;
 
     public MenuItemTo(Integer id, LocalDate date, int dishId, double price) {

@@ -1,6 +1,5 @@
 package restaurant.votingsystem.repository;
 
-import net.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -34,4 +33,11 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
     @Modifying
     @Query("DELETE FROM MenuItem mi WHERE mi.restaurant.id=:id")
     int deleteAllForRestaurant(@Param("id") int id);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE MenuItem mi " +
+            "SET mi.dishId=:dishId, mi.restaurantId=:restaurantId, mi.price=:price " +
+            "WHERE mi.id=:id")
+    int update(@Param("dishId") int dishId, @Param("restaurantId") int restaurantId, @Param("id") int id, @Param("price") double price);
 }

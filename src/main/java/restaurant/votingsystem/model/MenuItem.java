@@ -1,5 +1,7 @@
 package restaurant.votingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -20,15 +22,15 @@ public class MenuItem implements HasId {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MENU_ITEMS_SEQ")
     private Integer id;
 
-    @Column(name = "date", nullable = false, columnDefinition = "DATE default now")
-    @NotNull
+    @Column(name = "date", columnDefinition = "DATE default now")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate date = LocalDate.now();
 
+    //@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dish_id", nullable = false)
+    @JoinColumn(name = "dish_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
+    //@JsonIgnore
     @Fetch(FetchMode.JOIN)
     private Dish dish;
 
@@ -38,11 +40,17 @@ public class MenuItem implements HasId {
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
+    //@JsonIgnore
     @Fetch(FetchMode.JOIN)
     private Restaurant restaurant;
+
+    @Column(name = "restaurant_id")
+    private Integer restaurantId;
+
+    @Column(name = "dish_id")
+    private Integer dishId;
 
     public MenuItem() {
     }
@@ -69,6 +77,14 @@ public class MenuItem implements HasId {
         this.restaurant = restaurant;
     }
 
+    public MenuItem(Integer id, LocalDate date, double price, Integer dishId, Integer restaurantId) {
+        this.id = id;
+        this.date = date;
+        this.price = price;
+        this.dishId = dishId;
+        this.restaurantId = restaurantId;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -81,16 +97,8 @@ public class MenuItem implements HasId {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public Dish getDish() {
         return dish;
-    }
-
-    public void setDish(Dish dish) {
-        this.dish = dish;
     }
 
     public double getPrice() {
@@ -105,17 +113,19 @@ public class MenuItem implements HasId {
         return restaurant;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
+    public Integer getRestaurantId() {
+        return restaurantId;
     }
 
-    @Override
-    public String toString() {
-        return "MenuItem{" +
-                "date=" + date +
-                ", dish=" + dish +
-                ", price=" + price +
-                ", restaurant=" + restaurant +
-                '}';
+    public void setRestaurantId(Integer restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public Integer getDishId() {
+        return dishId;
+    }
+
+    public void setDishId(Integer dishId) {
+        this.dishId = dishId;
     }
 }

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.repository.DishRepository;
-import restaurant.votingsystem.to.MenuItemTo;
 import restaurant.votingsystem.to.RestaurantTo;
 
 import java.util.ArrayList;
@@ -41,7 +40,8 @@ public class RestaurantUtil {
 
     public static List<MenuItem> getMenusByRestaurant(Collection<MenuItem> restaurantsMenuItems) {
         List<MenuItem> menuItemTos = restaurantsMenuItems.stream()
-                .map(menuItem -> new MenuItem(menuItem.getId()
+                .map(menuItem -> new MenuItem(
+                        menuItem.getId()
                         , menuItem.getDate()
                         , menuItem.getPrice()
                         , menuItem.getDish())
@@ -51,7 +51,8 @@ public class RestaurantUtil {
     }
 
     public static MenuItem getMenuItemByRestaurant(MenuItem menuItem) {
-        MenuItem menuItemTos = new MenuItem(menuItem.getId()
+        MenuItem menuItemTos = new MenuItem(
+                menuItem.getId()
                 , menuItem.getDate()
                 , menuItem.getPrice()
                 , menuItem.getDish());

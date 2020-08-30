@@ -27,7 +27,6 @@ public class RestaurantTo extends BaseTo {
         this.name = name;
     }
 
-
     public List<MenuItem> getMenuItems() {
         return menuItems;
     }

@@ -11,9 +11,6 @@ import java.util.List;
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = "description",
         name = "dishes_unique_description_idx")})
 public class Dish extends AbstractBaseEntity {
-    public Dish() {
-    }
-
     @Column(name = "description", nullable = false)
     @NotBlank
     @Size(max = 100)
@@ -23,7 +20,10 @@ public class Dish extends AbstractBaseEntity {
     @OrderBy("date DESC")
     private List<MenuItem> menuItems;
 
-    public Dish(Integer id, @NotBlank @Size(max = 100) String description) {
+    public Dish() {
+    }
+
+    public Dish(Integer id, String description) {
         super(id);
         this.description = description;
     }
