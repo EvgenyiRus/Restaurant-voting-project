@@ -1,4 +1,4 @@
-package restaurant.votingsystem.web.user;
+package restaurant.votingsystem.web;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,13 +6,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import restaurant.votingsystem.model.Role;
-import restaurant.votingsystem.model.User;
-import restaurant.votingsystem.repository.UserRepository;
-import restaurant.votingsystem.web.AbstractControllerTest;
+import restaurant.votingsystem.model.Dish;
+import restaurant.votingsystem.repository.DishRepository;
+import restaurant.votingsystem.repository.MenuItemRepository;
+import restaurant.votingsystem.web.dish.DishController;
 import restaurant.votingsystem.web.json.JsonUtil;
 
-import java.util.Collections;
 import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertThrows;
@@ -23,33 +22,35 @@ import static restaurant.votingsystem.TestData.*;
 import static restaurant.votingsystem.TestUtil.readFromJson;
 import static restaurant.votingsystem.TestUtil.userHttpBasic;
 
-class AdminControllerTest extends AbstractControllerTest {
-
-    private static final String REST_URL = AdminController.REST_URL + '/';
+class DishControllerTest extends AbstractControllerTest {
+    private static final String REST_URL = DishController.REST_URL + '/';
 
     @Autowired
-    UserRepository userRepository;
+    DishRepository dishRepository;
+
+    @Autowired
+    MenuItemRepository menuItemRepository;
 
     @Test
     void get() throws Exception {
         perform(MockMvcRequestBuilders
-                .get(REST_URL + USER.getId())
+                .get(REST_URL + DISH.getId())
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(JsonUtil.writeValue(USER)));
+                .andExpect(content().json(JsonUtil.writeValue(DISH)));
     }
 
     @Test
-    void getVotes() throws Exception {
+    void getHistory() throws Exception {
         perform(MockMvcRequestBuilders
-                .get(REST_URL + VOTED_USER.getId() + "/votes")
+                .get(REST_URL + "{id}/history", DISH.getId())
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(JsonUtil.writeValue(VOTED_USER_VOTES)));
+                .andExpect(content().json(JsonUtil.writeValue(DISH_HISTORY)));
     }
 
     @Test
@@ -60,47 +61,58 @@ class AdminControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+    }
+
+    @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders
-                .delete(REST_URL + USER.getId())
+                .delete(REST_URL + DISH.getId())
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
         assertThrows(NoSuchElementException.class,
-                () -> userRepository.findById(USER.getId()).orElseThrow());
-    }
-
-    @Test
-    void createWithLocation() throws Exception {
-        User newUser = new User(null, "New", "new@gmail.com", "newPass", Collections.singleton(Role.USER));
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(ADMIN))
-                .content(jsonWithPassword(newUser, "newPass")))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-
-        User created = readFromJson(action, User.class);
-        int newId = created.id();
-        newUser.setId(newId);
-        USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userRepository.findById(newId).orElseThrow(), newUser);
+                () -> dishRepository.findById(DISH.getId()).orElseThrow());
     }
 
     @Test
     @Transactional
     void update() throws Exception {
-        User editUser = new User(USER.getId(), "editName", "edit@mail.ru");
+        Dish editDish = new Dish(DISH.getId(), "editDish");
         perform(MockMvcRequestBuilders
-                .put(REST_URL + USER.getId())
+                .put(REST_URL + DISH.getId())
                 .with(userHttpBasic(ADMIN))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonWithPassword(editUser, "editPassword"))
+                .content(JsonUtil.writeValue(editDish))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        USER_MATCHER.assertMatch(userRepository.findById(editUser.getId()).orElseThrow(), editUser);
+
+        DISH_MATCHER.assertMatch(dishRepository.findById(editDish.getId()).orElseThrow(), editDish);
+    }
+
+    @Test
+    @Transactional
+    void createWithLocation() throws Exception {
+        Dish newDish = new Dish(null, "newName");
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newDish))
+                .with(userHttpBasic(ADMIN))
+                .content(JsonUtil.writeValue(newDish))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        Dish created = readFromJson(action, Dish.class);
+        int newId = created.id();
+        newDish.setId(newId);
+
+        DISH_MATCHER.assertMatch(dishRepository.findById(newDish.getId()).orElseThrow(), newDish);
     }
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -47,12 +48,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**","/dishes/**").hasRole("ADMIN")
-                .antMatchers("/profile/**","/restaurants/**","/votes/**").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
                 //Доступ разрешен анонимным пользователям и всем авторизированным
-                .antMatchers("/restaurants/menus").permitAll()
+                .antMatchers("/restaurants/**/menus/**", "/restaurants/**/votes", "/profile").authenticated()
                 .antMatchers("/profile/register").anonymous()
+                //Доступ только для пользователей с ролью Администратор
+                .antMatchers("/admin/**", "/restaurants/**", "/dishes/**").hasRole("ADMIN")
                 //Все остальные страницы требуют аутентификации
                 .anyRequest()
                 .authenticated()

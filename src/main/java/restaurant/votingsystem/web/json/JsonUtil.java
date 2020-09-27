@@ -10,7 +10,6 @@ import java.util.Map;
 
 import static restaurant.votingsystem.web.json.JacksonObjectMapper.getMapper;
 
-
 public class JsonUtil {
 
     public static <T> List<T> readValues(String json, Class<T> clazz) {

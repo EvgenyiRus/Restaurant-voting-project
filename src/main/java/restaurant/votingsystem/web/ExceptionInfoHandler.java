@@ -28,12 +28,12 @@ import static restaurant.votingsystem.util.exception.ErrorType.*;
 public class ExceptionInfoHandler {
     private static final Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
 
-    public static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
-    public static final String EXCEPTION_TIME_IS_AFTER_VOTE = "exception.vote.overTime";
+    private static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
+    private static final String EXCEPTION_DUPLICATE_DISH = "exception.menuItem.duplicateDish";
 
     private static final Map<String, String> CONSTRAINS_MAP = Map.of(
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
-            "vote_idx", EXCEPTION_TIME_IS_AFTER_VOTE);
+            "menus_items_idx", EXCEPTION_DUPLICATE_DISH);
 
     private final MessageSourceAccessor messageSourceAccessor;
 

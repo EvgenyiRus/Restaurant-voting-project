@@ -13,9 +13,11 @@ import restaurant.votingsystem.model.User;
 import restaurant.votingsystem.model.Vote;
 import restaurant.votingsystem.repository.UserRepository;
 import restaurant.votingsystem.repository.VoteRepository;
+import restaurant.votingsystem.to.UserTo;
 import restaurant.votingsystem.util.UserUtil;
 import restaurant.votingsystem.util.VoteUtil;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -32,35 +34,40 @@ public class UserController {
     private VoteRepository voteRepository;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public User get(@AuthenticationPrincipal AuthorizedUser authUser) {
+    public UserTo get(@AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("Get user with id={}", authUser.getId());
-        return userRepository.findById(authUser.getId()).orElseThrow();
+        User user = userRepository.findById(authUser.getId()).orElseThrow();
+        return UserUtil.asTo(user);
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<User> register(@Valid @RequestBody User user) {
         log.info("New user '{}' was added", user.getEmail());
-        user=UserUtil.prepareToSave(user,user.getRoles());
+        user = UserUtil.prepareToSave(user, user.getRoles());
         userRepository.save(user);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL).build().toUri();
+        URI uriOfNewResource = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path(REST_URL)
+                .build()
+                .toUri();
         return ResponseEntity.created(uriOfNewResource).body(user);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @AuthenticationPrincipal AuthorizedUser authUser) {
+    public void update(@Valid @RequestBody User user, @AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("User '{}' was updated", authUser.getUsername());
-        user=UserUtil.prepareToSave(user,user.getRoles());
+        user = UserUtil.prepareToSave(user, user.getRoles());
         user.setId(authUser.getId());
         userRepository.save(user);
     }
 
-    @GetMapping(value = "/votes/history",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/votes/history", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Vote> getVotes(@AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("Get votes user with id={}", authUser.getId());
-        return VoteUtil.getRestaurantsByVotedUser(voteRepository.getAllVotesByUser(authUser.getId()));
+        List<Vote> votesUsers = voteRepository.getAllVotesByUser(authUser.getId()).orElseThrow();
+        return VoteUtil.getRestaurantsByVotedUser(votesUsers);
     }
 
     @DeleteMapping

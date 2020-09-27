@@ -1,15 +1,9 @@
 package restaurant.votingsystem.util;
 
-import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
-import restaurant.votingsystem.web.dish.DishHistory;
-import restaurant.votingsystem.to.MenuItemTo;
-import restaurant.votingsystem.to.RestaurantTo;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DishHistoryUtil {
@@ -17,31 +11,17 @@ public class DishHistoryUtil {
     public DishHistoryUtil() {
     }
 
-    public static List<DishHistory> getHistoryDish(Collection<MenuItem> restaurantsMenuItems) {
-        Map<Dish, List<MenuItem>> allMenuItemsGroupingByDish = restaurantsMenuItems.stream().
-                collect(Collectors.groupingBy(MenuItem::getDish));
-
-        List<DishHistory> dishHistory = new ArrayList<>();
-        for (Map.Entry<Dish, List<MenuItem>> entry : allMenuItemsGroupingByDish.entrySet()) {
-            List<MenuItemTo> menuItemTos=entry.getValue().stream()
-                    .map(menuItem ->
-                            CreateMenuItemTo(menuItem)
-                    )
-                    .collect(Collectors.toList());
-
-            dishHistory.add(new DishHistory(
-                    entry.getKey().getDescription(),
-                    menuItemTos));
-        }
-        return dishHistory;
+    public static List<MenuItem> getHistoryDish(Collection<MenuItem> menuItems) {
+        return menuItems.stream().map(DishHistoryUtil::CreateMenuItemWithoutDish)
+                .collect(Collectors.toList());
     }
 
-    public static MenuItemTo CreateMenuItemTo(MenuItem menuItem) {
-        return new MenuItemTo(
+    private static MenuItem CreateMenuItemWithoutDish(MenuItem menuItem) {
+        return new MenuItem(
                 menuItem.getId(),
                 menuItem.getDate(),
                 menuItem.getPrice(),
-                menuItem.getRestaurant().getId()
+                menuItem.getRestaurant()
         );
     }
 }

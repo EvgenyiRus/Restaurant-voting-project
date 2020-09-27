@@ -1,9 +1,7 @@
 package restaurant.votingsystem.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
-import restaurant.votingsystem.repository.DishRepository;
 import restaurant.votingsystem.to.RestaurantTo;
 
 import java.util.ArrayList;
@@ -13,9 +11,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RestaurantUtil {
-
-    @Autowired
-    DishRepository dishRepository;
 
     public RestaurantUtil() {
     }
@@ -39,7 +34,7 @@ public class RestaurantUtil {
     }
 
     public static List<MenuItem> getMenusByRestaurant(Collection<MenuItem> restaurantsMenuItems) {
-        List<MenuItem> menuItemTos = restaurantsMenuItems.stream()
+        return restaurantsMenuItems.stream()
                 .map(menuItem -> new MenuItem(
                         menuItem.getId()
                         , menuItem.getDate()
@@ -47,15 +42,13 @@ public class RestaurantUtil {
                         , menuItem.getDish())
                 )
                 .collect(Collectors.toList());
-        return menuItemTos;
     }
 
     public static MenuItem getMenuItemByRestaurant(MenuItem menuItem) {
-        MenuItem menuItemTos = new MenuItem(
+        return new MenuItem(
                 menuItem.getId()
                 , menuItem.getDate()
                 , menuItem.getPrice()
                 , menuItem.getDish());
-        return menuItemTos;
     }
 }

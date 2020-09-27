@@ -70,5 +70,7 @@ CREATE TABLE votes(
     FOREIGN KEY(restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE,
     CONSTRAINT vote_idx UNIQUE (user_id, date)
 );
-CREATE INDEX votes_item_idx
+CREATE INDEX votes_item_idx_restaurant
     ON votes (restaurant_id, date);
+CREATE INDEX votes_item_idx_user
+    ON votes (user_id, date);

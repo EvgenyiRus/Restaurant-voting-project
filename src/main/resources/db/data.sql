@@ -75,7 +75,7 @@ VALUES(now,100014,100002, 255),
 INSERT INTO users (name, email, password) VALUES
 ('User', 'quest@yandex.ru', '{noop}quest'),        --100018
 ('User', 'vasya@gmail.com', '{noop}vasya'),        --100019
-('User', 'Gosha@gmail.com', '{noop}gosha'),        --100020
+('User', 'gosha@gmail.com', '{noop}gosha'),        --100020
 ('User', 'trol@gmail.com', '{noop}trol');          --100021
 
 INSERT INTO user_roles (role, user_id) VALUES

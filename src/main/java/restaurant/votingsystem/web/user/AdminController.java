@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.User;
@@ -14,7 +15,9 @@ import restaurant.votingsystem.repository.UserRepository;
 import restaurant.votingsystem.repository.VoteRepository;
 import restaurant.votingsystem.util.UserUtil;
 import restaurant.votingsystem.util.VoteUtil;
+import restaurant.votingsystem.util.exception.NotSuchElementException;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -39,13 +42,15 @@ public class AdminController {
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
         log.info("Get user with id={}", id);
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotSuchElementException(new String[]{"user", String.valueOf(id)}));
     }
 
-    @GetMapping(value = "/{id}/votes",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}/votes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Vote> getVotes(@PathVariable int id) {
         log.info("Get votes user with id={}", id);
-        return VoteUtil.getRestaurantsByVotedUser(voteRepository.getAllVotesByUser(id));
+        List<Vote> userVotes = voteRepository.getAllVotesByUser(id).orElseThrow();
+        return VoteUtil.getRestaurantsByVotedUser(userVotes);
     }
 
     @DeleteMapping("/{id}")
@@ -57,9 +62,9 @@ public class AdminController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
         log.info("New user '{}' was added", user.getName());
-        User created = UserUtil.prepareToSave(user,user.getRoles());
+        User created = UserUtil.prepareToSave(user, user.getRoles());
         userRepository.save(created);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -69,9 +74,10 @@ public class AdminController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable int id) {
+    @Transactional
+    public void update(@Valid @RequestBody User user, @PathVariable int id) {
         log.info("User '{}' was updated", user.getName());
-        user=UserUtil.prepareToSave(user,user.getRoles());
+        user = UserUtil.prepareToSave(user, user.getRoles());
         user.setId(id);
         userRepository.save(user);
     }

@@ -8,12 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import restaurant.votingsystem.model.Dish;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface DishRepository extends JpaRepository<Dish,Integer> {
 
     @Query("SELECT d FROM Dish d where lower(d.description) like %:name% ORDER BY d.description asc")
-    List<Dish> getAllByDescription(@Param("name") String name);
+    Optional<List<Dish>> getAllByDescription(@Param("name") String name);
 
     @Transactional
     @Modifying

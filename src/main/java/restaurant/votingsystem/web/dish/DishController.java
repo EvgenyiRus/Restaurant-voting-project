@@ -9,10 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
+import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.repository.DishRepository;
 import restaurant.votingsystem.repository.MenuItemRepository;
-import restaurant.votingsystem.util.DishHistoryUtil;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import static org.jsoup.internal.StringUtil.isBlank;
 @RestController
 @RequestMapping(value = DishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class DishController {
-    static final String REST_URL = "/dishes";
+    public static final String REST_URL = "/dishes";
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -40,15 +41,15 @@ public class DishController {
     public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
         log.info("Get all dishes or that the description contains '{}'", description);
         if (!isBlank(description)) {
-            return dishRepository.getAllByDescription(description.toLowerCase());
+            return dishRepository.getAllByDescription(description.toLowerCase()).orElseThrow();
         }
-        return dishRepository.getAllByDescription("");
+        return dishRepository.getAllByDescription("").orElseThrow();
     }
 
     @GetMapping("/{id}/history")
-    public List<DishHistory> getHistory(@PathVariable int id) {
+    public List<MenuItem> getHistory(@PathVariable int id) {
         log.info("Get history dish with id='{}'", id);
-        return DishHistoryUtil.getHistoryDish(menuItemRepository.getHistoryDish(id));
+        return menuItemRepository.getHistoryDish(id).orElseThrow();
     }
 
     @DeleteMapping("/{id}")
@@ -60,14 +61,14 @@ public class DishController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Dish dish, @PathVariable int id) {
+    public void update(@Valid @RequestBody Dish dish, @PathVariable int id) {
         log.info("Dish with id='{}' was updated", id);
         dish.setId(id);
         dishRepository.save(dish);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createWithLocation(@RequestBody Dish dish) {
+    public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish) {
         log.info("New dish '{}' was added", dish.getDescription());
         dishRepository.save(dish);
 

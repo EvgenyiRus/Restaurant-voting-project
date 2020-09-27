@@ -1,7 +1,5 @@
 package restaurant.votingsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -10,7 +8,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -26,23 +23,19 @@ public class MenuItem implements HasId {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate date = LocalDate.now();
 
-    //@JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
     @Fetch(FetchMode.JOIN)
     private Dish dish;
 
     @Column(name = "price", nullable = false, columnDefinition = "Integer default 0")
-    @NotNull
     @Range(min = 0, max = 99999)
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    //@JsonIgnore
     @Fetch(FetchMode.JOIN)
     private Restaurant restaurant;
 
@@ -128,4 +121,5 @@ public class MenuItem implements HasId {
     public void setDishId(Integer dishId) {
         this.dishId = dishId;
     }
+
 }

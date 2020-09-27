@@ -1,5 +1,6 @@
 package restaurant.votingsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
@@ -8,12 +9,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
-public class User extends AbstractBaseEntity implements Serializable {
+public class User extends AbstractBaseEntity {
     @NotBlank
     @Size(min = 2, max = 100)
     @Column(name = "name", nullable = false)
@@ -32,8 +32,11 @@ public class User extends AbstractBaseEntity implements Serializable {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique_idx")})
+    @CollectionTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = {
+                    @UniqueConstraint(columnNames = {"user_id", "role"}, name = "user_roles_unique_idx")
+            })
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     @BatchSize(size = 200)
@@ -78,10 +81,6 @@ public class User extends AbstractBaseEntity implements Serializable {
         this.email = email.toLowerCase();
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Set<Role> getRoles() {
         return roles;
     }
@@ -100,5 +99,13 @@ public class User extends AbstractBaseEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -1,16 +1,16 @@
 package restaurant.votingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"},
-        name = "vote_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "vote_idx")})
 public class Vote implements HasId{
 
     @Id
@@ -19,51 +19,51 @@ public class Vote implements HasId{
     private Integer id;
 
     @Column(name = "date", nullable = false, columnDefinition = "DATE default now")
-    @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate date = LocalDate.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
+    @Fetch(FetchMode.JOIN)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
+    @Fetch(FetchMode.JOIN)
     private Restaurant restaurant;
+
+    @Column(name = "restaurant_id")
+    private Integer restaurantId;
+
+    @Column(name = "user_id")
+    private Integer userId;
 
     public Vote() {
     }
 
-    public Vote(Integer id,@NotNull LocalDate date, @NotNull Restaurant restaurant) {
-        this.id=id;
+    public Vote(Integer id, LocalDate date, Restaurant restaurant) {
+        this.id = id;
         this.date = date;
         this.restaurant = restaurant;
     }
 
-    public Vote(Integer id,@NotNull LocalDate date, @NotNull User user) {
-        this.id=id;
+    public Vote(Integer id, LocalDate date, Restaurant restaurant, User user) {
+        this.id = id;
+        this.date = date;
+        this.user = user;
+        this.restaurant = restaurant;
+    }
+
+    public Vote(Integer id, LocalDate date, User user) {
+        this.id = id;
         this.date = date;
         this.user = user;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public LocalDate getDate() {
         return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public User getUser() {
@@ -80,5 +80,21 @@ public class Vote implements HasId{
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setRestaurantId(Integer restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
