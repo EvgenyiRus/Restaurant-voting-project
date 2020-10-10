@@ -6,6 +6,8 @@ import restaurant.votingsystem.web.json.JsonUtil;
 import java.time.LocalDate;
 import java.util.List;
 
+import static java.math.BigDecimal.valueOf;
+
 public class TestData {
     public static TestMatcher<MenuItem> MENU_ITEM_MATCHER = TestMatcher.usingFieldsComparator(MenuItem.class, "dish", "restaurant", "dishId", "restaurantId");
     public static TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingFieldsComparator(Restaurant.class);
@@ -31,10 +33,10 @@ public class TestData {
 
     //for RESTAURANT
     public static final List<MenuItem> MENU_ITEMS_RESTAURANT = List.of(
-            new MenuItem(1, LocalDate.now(), 255, DISH),
-            new MenuItem(2, LocalDate.now(), 500.65, DISH1),
-            new MenuItem(3, LocalDate.now(), 100, DISH2),
-            new MenuItem(4, LocalDate.now(), 150.34, DISH3)
+            new MenuItem(1, LocalDate.now(), valueOf(255), DISH),
+            new MenuItem(2, LocalDate.now(), valueOf(500.65), DISH1),
+            new MenuItem(3, LocalDate.now(), valueOf(100), DISH2),
+            new MenuItem(4, LocalDate.now(), valueOf(150.34), DISH3)
     );
 
     public static final List<Vote> RESTAURANT_VOTES = List.of(
@@ -50,9 +52,9 @@ public class TestData {
 
     //for DISH
     public static final List<MenuItem> DISH_HISTORY = List.of(
-            new MenuItem(1, LocalDate.now(), 255, RESTAURANT),
-            new MenuItem(9, LocalDate.now(), 267, RESTAURANT4),
-            new MenuItem(18, LocalDate.now().minusDays(1), 255.5, RESTAURANT)
+            new MenuItem(1, LocalDate.now(), valueOf(255), RESTAURANT),
+            new MenuItem(9, LocalDate.now(), valueOf(267), RESTAURANT4),
+            new MenuItem(18, LocalDate.now().minusDays(1), valueOf(255.5), RESTAURANT)
     );
 
     public static String jsonWithPassword(User user, String password) {

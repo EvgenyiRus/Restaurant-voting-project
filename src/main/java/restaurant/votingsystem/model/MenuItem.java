@@ -8,10 +8,11 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "restaurant_id", "dish_id"},
+@Table(name = "menu_items", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_create", "restaurant_id", "dish_id"},
         name = " menus_items_idx")})
 public class MenuItem implements HasId {
     @Id
@@ -19,7 +20,7 @@ public class MenuItem implements HasId {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MENU_ITEMS_SEQ")
     private Integer id;
 
-    @Column(name = "date", columnDefinition = "DATE default now")
+    @Column(name = "date_create", columnDefinition = "DATE default now")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate date = LocalDate.now();
 
@@ -29,9 +30,9 @@ public class MenuItem implements HasId {
     @Fetch(FetchMode.JOIN)
     private Dish dish;
 
-    @Column(name = "price", nullable = false, columnDefinition = "Integer default 0")
+    @Column(name = "price", nullable = false, columnDefinition = "Decimal default 0")
     @Range(min = 0, max = 99999)
-    private double price;
+    private BigDecimal price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
@@ -48,7 +49,7 @@ public class MenuItem implements HasId {
     public MenuItem() {
     }
 
-    public MenuItem(Integer id, LocalDate date, double price, Dish dish, Restaurant restaurant) {
+    public MenuItem(Integer id, LocalDate date, BigDecimal price, Dish dish, Restaurant restaurant) {
         this.id = id;
         this.date = date;
         this.dish = dish;
@@ -56,21 +57,21 @@ public class MenuItem implements HasId {
         this.restaurant = restaurant;
     }
 
-    public MenuItem(Integer id, LocalDate date, double price, Dish dish) {
+    public MenuItem(Integer id, LocalDate date, BigDecimal price, Dish dish) {
         this.id = id;
         this.date = date;
         this.dish = dish;
         this.price = price;
     }
 
-    public MenuItem(Integer id, LocalDate date, double price, Restaurant restaurant) {
+    public MenuItem(Integer id, LocalDate date, BigDecimal price, Restaurant restaurant) {
         this.id = id;
         this.date = date;
         this.price = price;
         this.restaurant = restaurant;
     }
 
-    public MenuItem(Integer id, LocalDate date, double price, Integer dishId, Integer restaurantId) {
+    public MenuItem(Integer id, LocalDate date, BigDecimal price, Integer dishId, Integer restaurantId) {
         this.id = id;
         this.date = date;
         this.price = price;
@@ -94,12 +95,13 @@ public class MenuItem implements HasId {
         return dish;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrice(BigDecimal price) {
+
+        this.price = price.setScale(2);
     }
 
     public Restaurant getRestaurant() {

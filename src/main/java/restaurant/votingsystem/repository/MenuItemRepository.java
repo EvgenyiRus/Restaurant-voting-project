@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
 
     @Query("select mi FROM MenuItem mi JOIN FETCH mi.dish JOIN FETCH mi.restaurant " +

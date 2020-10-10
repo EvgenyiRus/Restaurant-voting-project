@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "vote_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_create"}, name = "vote_idx")})
 public class Vote implements HasId{
 
     @Id
@@ -18,7 +18,7 @@ public class Vote implements HasId{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTE_SEQ")
     private Integer id;
 
-    @Column(name = "date", nullable = false, columnDefinition = "DATE default now")
+    @Column(name = "date_create", nullable = false, columnDefinition = "DATE default now")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate date = LocalDate.now();
 

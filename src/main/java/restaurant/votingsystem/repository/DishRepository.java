@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-public interface DishRepository extends JpaRepository<Dish,Integer> {
+public interface DishRepository extends JpaRepository<Dish, Integer> {
 
     @Query("SELECT d FROM Dish d where lower(d.description) like %:name% ORDER BY d.description asc")
     Optional<List<Dish>> getAllByDescription(@Param("name") String name);

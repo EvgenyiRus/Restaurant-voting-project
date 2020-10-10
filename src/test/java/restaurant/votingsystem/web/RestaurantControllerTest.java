@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.NoSuchElementException;
 
+import static java.math.BigDecimal.valueOf;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -154,7 +155,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     void createMenuItem() throws Exception {
-        MenuItem newMenuItem = new MenuItem(null, LocalDate.now(), 100, DISH4.getId(), RESTAURANT.getId());
+        MenuItem newMenuItem = new MenuItem(null, LocalDate.now(), valueOf(100), DISH4.getId(), RESTAURANT.getId());
         ResultActions action = perform(MockMvcRequestBuilders
                 .post(REST_URL + RESTAURANT.getId() + "/menus")
                 .with(userHttpBasic(ADMIN))
@@ -285,7 +286,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void updateMenuItem() throws Exception {
-        MenuItem editMenuItem = new MenuItem(MENU_ITEMS_RESTAURANT.get(0).getId(), LocalDate.now(), 1000, DISH4);
+        MenuItem editMenuItem = new MenuItem(MENU_ITEMS_RESTAURANT.get(0).getId(), LocalDate.now(), valueOf(1000), DISH4);
         perform(MockMvcRequestBuilders
                 .put(REST_URL + RESTAURANT.getId() + "/menus/{id}", editMenuItem.getId())
                 .with(userHttpBasic(ADMIN))
