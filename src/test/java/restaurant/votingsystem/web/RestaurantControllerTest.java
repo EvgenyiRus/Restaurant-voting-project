@@ -13,8 +13,8 @@ import restaurant.votingsystem.model.Vote;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.repository.RestaurantRepository;
 import restaurant.votingsystem.repository.VoteRepository;
-import restaurant.votingsystem.web.Restaurant.RestaurantController;
 import restaurant.votingsystem.web.json.JsonUtil;
+import restaurant.votingsystem.web.restaurant.RestaurantController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

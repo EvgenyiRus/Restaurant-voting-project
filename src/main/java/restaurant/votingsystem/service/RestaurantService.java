@@ -3,6 +3,7 @@ package restaurant.votingsystem.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import restaurant.votingsystem.model.Dish;
@@ -158,9 +159,6 @@ public class RestaurantService {
     public Vote createVote(int id, AuthorizedUser authUser) {
         Vote vote = new Vote();
         log.info("User {} voted for restaurant with id={}", authUser.getUsername(), id);
-        if (LocalTime.now().isAfter(TIME_VOTE)) {
-            throw new OverTimeVoteException();
-        }
         vote.setRestaurantId(id);
         vote.setUserId(authUser.getId());
         voteRepository.save(vote);

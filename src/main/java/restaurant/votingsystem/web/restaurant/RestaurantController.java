@@ -1,4 +1,4 @@
-package restaurant.votingsystem.web.Restaurant;
+package restaurant.votingsystem.web.restaurant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
