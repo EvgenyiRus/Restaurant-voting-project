@@ -208,7 +208,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @Transactional
-    void createOverTimeVote() throws Exception {
+    void updateOverTimeVoteException() throws Exception {
         VoteTime.TIME_VOTE = LocalTime.of(00,00,01);
         Vote newVote = new Vote(null, LocalDate.now(), RESTAURANT, USER);
         perform(MockMvcRequestBuilders

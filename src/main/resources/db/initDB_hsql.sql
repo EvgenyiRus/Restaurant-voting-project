@@ -54,7 +54,7 @@ CREATE TABLE menu_items
     date_create   DATE    default now,
     restaurant_id INTEGER           NOT NULL,
     dish_id       INTEGER           NOT NULL,
-    price         decimal default 0 NOT NULL,
+    price         DECIMAL(6,2) default 0 NOT NULL,
     FOREIGN KEY (dish_id) REFERENCES dishes (id) ON DELETE CASCADE,
     FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE,
     CONSTRAINT menus_items_idx UNIQUE (date_create, restaurant_id, dish_id)

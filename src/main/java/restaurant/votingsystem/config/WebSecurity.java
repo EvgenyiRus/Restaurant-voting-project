@@ -45,8 +45,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf()
-                .disable()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
@@ -57,8 +56,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 //Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin/**", "/restaurants/**", "/dishes/**").hasRole("ADMIN")
                 //Все остальные страницы требуют аутентификации
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()

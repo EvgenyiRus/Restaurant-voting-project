@@ -53,7 +53,7 @@ public class MenuItem implements HasId {
         this.id = id;
         this.date = date;
         this.dish = dish;
-        this.price = price;
+        this.price = price.setScale(2);
         this.restaurant = restaurant;
     }
 
@@ -61,20 +61,20 @@ public class MenuItem implements HasId {
         this.id = id;
         this.date = date;
         this.dish = dish;
-        this.price = price;
+        this.price = price.setScale(2);
     }
 
     public MenuItem(Integer id, LocalDate date, BigDecimal price, Restaurant restaurant) {
         this.id = id;
         this.date = date;
-        this.price = price;
+        this.price = price.setScale(2);
         this.restaurant = restaurant;
     }
 
     public MenuItem(Integer id, LocalDate date, BigDecimal price, Integer dishId, Integer restaurantId) {
         this.id = id;
         this.date = date;
-        this.price = price;
+        this.price = price.setScale(2);
         this.dishId = dishId;
         this.restaurantId = restaurantId;
     }
