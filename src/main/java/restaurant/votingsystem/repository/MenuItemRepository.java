@@ -1,5 +1,6 @@
 package restaurant.votingsystem.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,22 +10,21 @@ import restaurant.votingsystem.model.MenuItem;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
 
     @Query("select mi FROM MenuItem mi JOIN FETCH mi.dish JOIN FETCH mi.restaurant " +
-            "where mi.date=:date and mi.restaurant.id=:id")
-    Optional<List<MenuItem>> getMenuOnDateByRestaurant(@Param("id") Integer id, @Param("date") LocalDate date);
+            "where mi.date=:date and mi.restaurant.id=:restaurantId")
+    List<MenuItem> getMenuOnDateByRestaurant(@Param("restaurantId") Integer restaurantId, @Param("date") LocalDate date);
 
     @Query("SELECT mi FROM MenuItem mi JOIN FETCH mi.dish JOIN FETCH mi.restaurant " +
             "where mi.date=:date order by mi.restaurant.name asc")
-    Optional<List<MenuItem>> getAllMenus(@Param("date") LocalDate date);
+    List<MenuItem> getAllMenus(@Param("date") LocalDate date);
 
-    @Query("SELECT mi FROM MenuItem mi JOIN FETCH mi.dish JOIN FETCH mi.restaurant " +
-            "where mi.dish.id=:id order by mi.date desc")
-    Optional<List<MenuItem>> getHistoryDish(@Param("id") Integer id);
+    @Query("SELECT mi FROM MenuItem mi JOIN FETCH mi.restaurant JOIN FETCH mi.dish " +
+            "where mi.dish.id=:dishId order by mi.date desc")
+    List<MenuItem> getHistoryDish(@Param("dishId") Integer dishId);
 
     @Transactional
     @Modifying
@@ -33,6 +33,6 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Integer> {
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM MenuItem mi WHERE mi.restaurant.id=:id and mi.date=:date")
-    int deleteAllForRestaurant(@Param("id") int id, @Param("date") LocalDate date);
+    @Query("DELETE FROM MenuItem mi WHERE mi.restaurant.id=:restaurantId and mi.date=:date")
+    int deleteAllForRestaurant(@Param("restaurantId") int restaurantId, @Param("date") LocalDate date);
 }

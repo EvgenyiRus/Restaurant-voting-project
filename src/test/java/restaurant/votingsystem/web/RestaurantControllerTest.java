@@ -209,7 +209,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void updateOverTimeVoteException() throws Exception {
-        VoteTime.TIME_VOTE = LocalTime.of(00,00,01);
+        VoteTime.TIME_VOTE = LocalTime.of(11,00,01);
         Vote newVote = new Vote(null, LocalDate.now(), RESTAURANT, USER);
         perform(MockMvcRequestBuilders
                 .post(REST_URL + RESTAURANT.getId() + "/votes")
@@ -264,7 +264,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print());
 
         assertThrows(NoSuchElementException.class,
-                () -> menuItemRepository.getMenuOnDateByRestaurant(RESTAURANT.getId(), LocalDate.now()).orElseThrow());
+                () -> menuItemRepository.getMenuOnDateByRestaurant(RESTAURANT.getId(), LocalDate.now()));
     }
 
     @Test
@@ -302,6 +302,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void updateVote() throws Exception {
+        VoteTime.TIME_VOTE = LocalTime.of(23,59,59);
         Vote editVote = new Vote(RESTAURANT_VOTES.get(0).getId(), LocalDate.now(), RESTAURANT2, VOTED_USER);
         perform(MockMvcRequestBuilders
                 .put(REST_URL + RESTAURANT2.getId() + "/votes")

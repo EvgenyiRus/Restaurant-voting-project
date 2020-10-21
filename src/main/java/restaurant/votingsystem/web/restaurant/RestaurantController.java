@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.MenuItem;
@@ -119,7 +118,7 @@ public class RestaurantController {
         restaurantService.updateMenuItem(menuItem, id, menuItemId);
     }
 
-    @Transactional
+
     @PostMapping(value = "/{id}/votes", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createVote(@PathVariable int id, @AuthenticationPrincipal AuthorizedUser authUser) {
         Vote vote = restaurantService.createVote(id, authUser);

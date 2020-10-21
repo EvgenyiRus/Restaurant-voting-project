@@ -3,8 +3,8 @@ package restaurant.votingsystem.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
@@ -57,13 +57,13 @@ public class RestaurantService {
 
     public List<RestaurantTo> getAllMenus(LocalDate localDate) {
         log.info("Get menus of all restaurants");
-        List<MenuItem> menuItems =menuItemRepository.getAllMenus(localDate).orElseThrow();
+        List<MenuItem> menuItems = menuItemRepository.getAllMenus(localDate);
         return RestaurantUtil.getRestaurantsMenus(menuItems);
     }
 
     public List<MenuItem> getAllMenusByRestaurant(int id, LocalDate localDate) {
         log.info("Get menu from restaurant with id={}", id);
-        List<MenuItem> menuItems = menuItemRepository.getMenuOnDateByRestaurant(id, localDate).orElseThrow();
+        List<MenuItem> menuItems = menuItemRepository.getMenuOnDateByRestaurant(id, localDate);
         return RestaurantUtil.getMenusByRestaurant(menuItems);
     }
 
@@ -86,7 +86,7 @@ public class RestaurantService {
     //get votes
     public List<Vote> getAllForRestaurants(int id, LocalDate localDate) {
         log.info("Get users who was voted for restaurant with id={} today", id);
-        List<Vote> votes = voteRepository.getAllVotesByRestaurant(id, localDate.now()).orElseThrow();
+        List<Vote> votes = voteRepository.getAllVotesByRestaurant(id, localDate.now());
         return VoteUtil.getVotedUsers(votes);
     }
 
@@ -156,23 +156,24 @@ public class RestaurantService {
     }
 
     //Add vote
-    public Vote createVote(int id, AuthorizedUser authUser) {
+    public Vote createVote(int restaurantId, AuthorizedUser authUser) {
         Vote vote = new Vote();
-        log.info("User {} voted for restaurant with id={}", authUser.getUsername(), id);
-        vote.setRestaurantId(id);
+        log.info("User {} voted for restaurant with id={}", authUser.getUsername(), restaurantId);
+        vote.setRestaurantId(restaurantId);
         vote.setUserId(authUser.getId());
         voteRepository.save(vote);
         return vote;
     }
 
     //Edit vote
-    public void updateVote(int id, AuthorizedUser authUser) {
+    @Transactional
+    public void updateVote(int restaurantId, AuthorizedUser authUser) {
         log.info("User {} changed vote", authUser.getUsername());
         if (LocalTime.now().isAfter(TIME_VOTE)) {
             throw new OverTimeVoteException();
         }
         Vote editVote = voteRepository.getVoteByUserToDay(authUser.getId(), LocalDate.now()).orElseThrow();
-        editVote.setRestaurantId(id);
+        editVote.setRestaurantId(restaurantId);
         voteRepository.save(editVote);
     }
 

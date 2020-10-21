@@ -41,15 +41,15 @@ public class DishController {
     public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
         log.info("Get all dishes or that the description contains '{}'", description);
         if (!isBlank(description)) {
-            return dishRepository.getAllByDescription(description.toLowerCase()).orElseThrow();
+            return dishRepository.getAllByDescription(description.toLowerCase());
         }
-        return dishRepository.getAllByDescription("").orElseThrow();
+        return dishRepository.getAllByDescription("");
     }
 
     @GetMapping("/{id}/history")
     public List<MenuItem> getHistory(@PathVariable int id) {
         log.info("Get history dish with id='{}'", id);
-        return menuItemRepository.getHistoryDish(id).orElseThrow();
+        return menuItemRepository.getHistoryDish(id);
     }
 
     @DeleteMapping("/{id}")

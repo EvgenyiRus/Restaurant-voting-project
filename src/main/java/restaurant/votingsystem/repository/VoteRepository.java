@@ -12,16 +12,16 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface VoteRepository extends JpaRepository<Vote, Integer> {
 
-    @Query("select v FROM Vote v JOIN FETCH v.user JOIN FETCH v.restaurant " +
-            "where v.date=:date and v.restaurant.id=:id")
-    Optional<List<Vote>> getAllVotesByRestaurant(int id, LocalDate date);
+    @Query("select v FROM Vote v JOIN FETCH v.user " +
+            "where v.restaurant.id=:restaurantId and v.date=:date")
+    List<Vote> getAllVotesByRestaurant(int restaurantId, LocalDate date);
 
-    @Query("select v FROM Vote v JOIN FETCH v.user JOIN FETCH v.restaurant " +
-            "where v.user.id=:id and v.date=:date")
-    Optional<Vote> getVoteByUserToDay(int id, LocalDate date);
+    @Query("select v FROM Vote v JOIN FETCH v.restaurant " +
+            "where v.user.id=:userId and v.date=:date")
+    Optional<Vote> getVoteByUserToDay(int userId, LocalDate date);
 
-    @Query("select v FROM Vote v JOIN FETCH v.user JOIN FETCH v.restaurant " +
-            "where v.user.id=:id")
-    Optional<List<Vote>> getAllVotesByUser(int id);
+    @Query("select v FROM Vote v JOIN FETCH v.restaurant " +
+            "where v.user.id=:userId")
+    List<Vote> getAllVotesByUser(int userId);
 
 }

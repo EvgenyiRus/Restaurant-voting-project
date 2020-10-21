@@ -66,7 +66,7 @@ public class UserController {
     @GetMapping(value = "/votes/history", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Vote> getVotes(@AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("Get votes user with id={}", authUser.getId());
-        List<Vote> votesUsers = voteRepository.getAllVotesByUser(authUser.getId()).orElseThrow();
+        List<Vote> votesUsers = voteRepository.getAllVotesByUser(authUser.getId());
         return VoteUtil.getRestaurantsByVotedUser(votesUsers);
     }
 

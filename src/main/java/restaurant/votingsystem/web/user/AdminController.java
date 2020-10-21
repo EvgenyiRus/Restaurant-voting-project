@@ -49,7 +49,7 @@ public class AdminController {
     @GetMapping(value = "/{id}/votes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Vote> getVotes(@PathVariable int id) {
         log.info("Get votes user with id={}", id);
-        List<Vote> userVotes = voteRepository.getAllVotesByUser(id).orElseThrow();
+        List<Vote> userVotes = voteRepository.getAllVotesByUser(id);
         return VoteUtil.getRestaurantsByVotedUser(userVotes);
     }
 
