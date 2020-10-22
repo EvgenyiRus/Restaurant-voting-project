@@ -25,9 +25,9 @@ public class RestaurantUtil {
 
             restaurantTos.add(
                     new RestaurantTo(
-                            entry.getKey().getId()
-                            , entry.getKey().getName()
-                            , menuItemTos)
+                            entry.getKey().getId(),
+                            entry.getKey().getName(),
+                            menuItemTos)
             );
         }
         return restaurantTos;
@@ -36,19 +36,19 @@ public class RestaurantUtil {
     public static List<MenuItem> getMenusByRestaurant(Collection<MenuItem> restaurantsMenuItems) {
         return restaurantsMenuItems.stream()
                 .map(menuItem -> new MenuItem(
-                        menuItem.getId()
-                        , menuItem.getDate()
-                        , menuItem.getPrice()
-                        , menuItem.getDish())
+                        menuItem.getId(),
+                        menuItem.getDate(),
+                        menuItem.getPrice(),
+                        menuItem.getDish())
                 )
                 .collect(Collectors.toList());
     }
 
     public static MenuItem getMenuItemByRestaurant(MenuItem menuItem) {
         return new MenuItem(
-                menuItem.getId()
-                , menuItem.getDate()
-                , menuItem.getPrice()
-                , menuItem.getDish());
+                menuItem.getId(),
+                menuItem.getDate(),
+                menuItem.getPrice(),
+                menuItem.getDish());
     }
 }

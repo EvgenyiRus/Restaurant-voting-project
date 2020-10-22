@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import restaurant.votingsystem.config.VoteTime;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
 import restaurant.votingsystem.model.Vote;
@@ -29,12 +28,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static restaurant.votingsystem.TestData.*;
 import static restaurant.votingsystem.TestUtil.readFromJson;
 import static restaurant.votingsystem.TestUtil.userHttpBasic;
+import static restaurant.votingsystem.VotingSystemApplication.TIME_VOTE;
 
 class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
 
     static {
-        VoteTime.TIME_VOTE = LocalTime.of(23, 59, 59);
+        TIME_VOTE = LocalTime.of(23, 59, 59);
     }
 
     @Autowired
@@ -209,7 +209,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void updateOverTimeVoteException() throws Exception {
-        VoteTime.TIME_VOTE = LocalTime.of(11,00,01);
+        TIME_VOTE = LocalTime.of(11, 00, 01);
         Vote newVote = new Vote(null, LocalDate.now(), RESTAURANT, USER);
         perform(MockMvcRequestBuilders
                 .post(REST_URL + RESTAURANT.getId() + "/votes")
@@ -302,7 +302,7 @@ class RestaurantControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void updateVote() throws Exception {
-        VoteTime.TIME_VOTE = LocalTime.of(23,59,59);
+        TIME_VOTE = LocalTime.of(23, 59, 59);
         Vote editVote = new Vote(RESTAURANT_VOTES.get(0).getId(), LocalDate.now(), RESTAURANT2, VOTED_USER);
         perform(MockMvcRequestBuilders
                 .put(REST_URL + RESTAURANT2.getId() + "/votes")
