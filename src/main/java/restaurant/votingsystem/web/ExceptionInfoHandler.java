@@ -30,9 +30,11 @@ public class ExceptionInfoHandler {
 
     private static final String EXCEPTION_DUPLICATE_EMAIL = "exception.user.duplicateEmail";
     private static final String EXCEPTION_DUPLICATE_DISH = "exception.menuItem.duplicateDish";
+    private static final String EXCEPTION_DUPLICATE_VOTE = "exception.vote.duplicate";
 
     private static final Map<String, String> CONSTRAINS_MAP = Map.of(
             "users_unique_email_idx", EXCEPTION_DUPLICATE_EMAIL,
+            "vote_idx", EXCEPTION_DUPLICATE_VOTE,
             "menus_items_idx", EXCEPTION_DUPLICATE_DISH);
 
     private final MessageSourceAccessor messageSourceAccessor;

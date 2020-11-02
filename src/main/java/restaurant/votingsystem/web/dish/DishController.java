@@ -12,6 +12,8 @@ import restaurant.votingsystem.model.Dish;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.repository.DishRepository;
 import restaurant.votingsystem.repository.MenuItemRepository;
+import restaurant.votingsystem.util.DishHistoryUtil;
+import restaurant.votingsystem.util.exception.NotFoundException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -34,7 +36,9 @@ public class DishController {
     @GetMapping("/{id}")
     public Dish get(@PathVariable int id) {
         log.info("Get dish with id={} ", id);
-        return dishRepository.findById(id).orElseThrow();
+        return dishRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                        new String[]{"dish", String.valueOf(id)}, NotFoundException.NOT_FOUND_EXCEPTION)
+        );
     }
 
     @GetMapping
@@ -49,7 +53,7 @@ public class DishController {
     @GetMapping("/{id}/history")
     public List<MenuItem> getHistory(@PathVariable int id) {
         log.info("Get history dish with id='{}'", id);
-        return menuItemRepository.getHistoryDish(id);
+        return DishHistoryUtil.getHistory(menuItemRepository.getHistoryDish(id));
     }
 
     @DeleteMapping("/{id}")
@@ -68,7 +72,7 @@ public class DishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody Dish dish) {
+    public ResponseEntity<Dish> create(@Valid @RequestBody Dish dish) {
         log.info("New dish '{}' was added", dish.getDescription());
         dishRepository.save(dish);
 

@@ -22,7 +22,6 @@
         <hsqldb.version>2.4.0</hsqldb.version>
         <!--Tools-->
         <jsoup.version>1.13.1</jsoup.version>
-        <ehcache.version>3.8.1</ehcache.version>
         <jackson.datatype>2.10.3</jackson.datatype>
     </properties>
 
@@ -45,6 +44,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!--cache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <!--security-->
@@ -92,13 +101,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Tools-->
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <scope>runtime</scope>
-            <version>${ehcache.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate5</artifactId>

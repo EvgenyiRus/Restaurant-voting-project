@@ -1,8 +1,6 @@
 package restaurant.votingsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -11,10 +9,10 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date_create"}, name = "vote_idx")})
-public class Vote implements HasId{
+public class Vote implements HasId {
 
     @Id
-    @SequenceGenerator(name = "VOTE_SEQ", sequenceName = "VOTE_SEQ", allocationSize = 1, initialValue = 1)
+    @SequenceGenerator(name = "VOTE_SEQ", sequenceName = "VOTE_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTE_SEQ")
     private Integer id;
 
@@ -57,6 +55,11 @@ public class Vote implements HasId{
     public Vote(Integer id, LocalDate date, User user) {
         this.id = id;
         this.date = date;
+        this.user = user;
+    }
+
+    public Vote(Integer id, User user) {
+        this.id = id;
         this.user = user;
     }
 

@@ -10,7 +10,7 @@ import restaurant.votingsystem.model.Restaurant;
 import java.util.List;
 
 @Transactional(readOnly = true)
-public interface RestaurantRepository extends JpaRepository<Restaurant,Integer> {
+public interface RestaurantRepository extends JpaRepository<Restaurant, Integer> {
 
     @Query("select r from Restaurant r order by r.name")
     List<Restaurant> getAll();

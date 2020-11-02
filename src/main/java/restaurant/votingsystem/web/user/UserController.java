@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.User;
@@ -16,6 +17,7 @@ import restaurant.votingsystem.repository.VoteRepository;
 import restaurant.votingsystem.to.UserTo;
 import restaurant.votingsystem.util.UserUtil;
 import restaurant.votingsystem.util.VoteUtil;
+import restaurant.votingsystem.util.exception.NotFoundException;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -33,10 +35,14 @@ public class UserController {
     @Autowired
     private VoteRepository voteRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public UserTo get(@AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("Get user with id={}", authUser.getId());
-        User user = userRepository.findById(authUser.getId()).orElseThrow();
+        User user = userRepository.findById(authUser.getId()).orElseThrow(
+                () -> new NotFoundException(new String[]{"user", String.valueOf(authUser.getId())}, NotFoundException.NOT_FOUND_EXCEPTION));
         return UserUtil.asTo(user);
     }
 
@@ -44,7 +50,7 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody User user) {
         log.info("New user '{}' was added", user.getEmail());
-        user = UserUtil.prepareToSave(user, user.getRoles());
+        user = UserUtil.prepareToSave(user, user.getRoles(), passwordEncoder);
         userRepository.save(user);
         URI uriOfNewResource = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
@@ -58,15 +64,15 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody User user, @AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("User '{}' was updated", authUser.getUsername());
-        user = UserUtil.prepareToSave(user, user.getRoles());
+        user = UserUtil.prepareToSave(user, user.getRoles(), passwordEncoder);
         user.setId(authUser.getId());
         userRepository.save(user);
     }
 
     @GetMapping(value = "/votes/history", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Vote> getVotes(@AuthenticationPrincipal AuthorizedUser authUser) {
+    public List<Vote> getHistoryVotes(@AuthenticationPrincipal AuthorizedUser authUser) {
         log.info("Get votes user with id={}", authUser.getId());
-        List<Vote> votesUsers = voteRepository.getAllVotesByUser(authUser.getId());
+        List<Vote> votesUsers = voteRepository.getAllByUser(authUser.getId());
         return VoteUtil.getRestaurantsByVotedUser(votesUsers);
     }
 

@@ -23,16 +23,14 @@ public class VoteService {
 
     @Autowired
     private VoteRepository voteRepository;
-
-    //get votes
-    public List<Vote> getAllForRestaurants(int id, LocalDate localDate) {
-        log.info("Get users who was voted for restaurant with id={} today", id);
-        List<Vote> votes = voteRepository.getAllVotesByRestaurant(id, localDate.now());
+    
+    public List<Vote> getByRestaurantForDate(int restaurantId, LocalDate localDate) {
+        log.info("Get users who was voted for restaurant with id={} today", restaurantId);
+        List<Vote> votes = voteRepository.getAllByRestaurantOnDay(restaurantId, localDate.now());
         return VoteUtil.getVotedUsers(votes);
     }
-
-    //Add vote
-    public Vote createVote(int restaurantId, AuthorizedUser authUser) {
+    
+    public Vote create(int restaurantId, AuthorizedUser authUser) {
         Vote vote = new Vote();
         log.info("User {} voted for restaurant with id={}", authUser.getUsername(), restaurantId);
         vote.setRestaurantId(restaurantId);
@@ -40,15 +38,14 @@ public class VoteService {
         voteRepository.save(vote);
         return vote;
     }
-
-    //Edit vote
+    
     @Transactional
-    public void updateVote(int restaurantId, AuthorizedUser authUser) {
+    public void update(int restaurantId, AuthorizedUser authUser) {
         log.info("User {} changed vote", authUser.getUsername());
         if (LocalTime.now().isAfter(TIME_VOTE)) {
             throw new OverTimeVoteException();
         }
-        Vote editVote = voteRepository.getVoteByUserToDay(authUser.getId(), LocalDate.now()).orElseThrow();
+        Vote editVote = voteRepository.getAllByUserOnDay(authUser.getId(), LocalDate.now()).orElseThrow();
         editVote.setRestaurantId(restaurantId);
         voteRepository.save(editVote);
     }

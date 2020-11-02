@@ -5,6 +5,7 @@ import restaurant.votingsystem.model.MenuItem;
 import java.util.List;
 
 public class RestaurantTo extends BaseTo {
+
     private String name;
     private List<MenuItem> menuItems;
 
@@ -12,11 +13,6 @@ public class RestaurantTo extends BaseTo {
         super(id);
         this.name = name;
         this.menuItems = menuItems;
-    }
-
-    public RestaurantTo(Integer id,String name) {
-        super(id);
-        this.name = name;
     }
 
     public String getName() {

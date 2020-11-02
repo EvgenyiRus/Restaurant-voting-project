@@ -1,10 +1,10 @@
 package restaurant.votingsystem.web.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import restaurant.votingsystem.model.Role;
@@ -35,6 +35,8 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Autowired
     VoteRepository voteRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Test
     void get() throws Exception {
@@ -57,7 +59,7 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void register() throws Exception {
         User newUser = new User(null, "newName", "newEmail@mail.ru");
-        newUser = UserUtil.prepareToSave(newUser, Collections.singleton(Role.USER));
+        newUser = UserUtil.prepareToSave(newUser, Collections.singleton(Role.USER), passwordEncoder);
         ResultActions action = perform(MockMvcRequestBuilders
                 .post(REST_URL + "register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -95,9 +97,9 @@ class UserControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(JsonUtil.writeValue(VOTED_USER_VOTES)));
+                .andExpect(content().json(JsonUtil.writeValue(USER_VOTES)));
 
-        Assert.assertNotEquals(voteRepository.getAllVotesByUser(USER.getId()), VOTED_USER_VOTES);
+        Assert.assertNotEquals(voteRepository.getAllByUser(USER.getId()), USER_VOTES);
     }
 
     @Test

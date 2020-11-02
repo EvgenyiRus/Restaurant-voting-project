@@ -78,6 +78,13 @@ public class MenuItem implements HasId {
         this.restaurantId = restaurantId;
     }
 
+    public MenuItem(Integer id, BigDecimal price, Dish dish, Restaurant restaurant) {
+        this.id = id;
+        this.price = price.setScale(2);
+        this.dish = dish;
+        this.restaurant = restaurant;
+    }
+
     public Integer getId() {
         return id;
     }

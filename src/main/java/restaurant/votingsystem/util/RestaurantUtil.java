@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 
 public class RestaurantUtil {
 
-    public RestaurantUtil() {
+    private RestaurantUtil() {
     }
 
-    public static List<RestaurantTo> getRestaurantsMenus(Collection<MenuItem> restaurantsMenuItems) {
-        Map<Restaurant, List<MenuItem>> allMenuItemsGroupingByRestaurant = restaurantsMenuItems.stream()
+    public static List<RestaurantTo> getAllWithMenus(Collection<MenuItem> menuItems) {
+        Map<Restaurant, List<MenuItem>> allMenuItemsGroupingByRestaurant = menuItems.stream()
                 .collect(Collectors.groupingBy(MenuItem::getRestaurant));
 
         List<RestaurantTo> restaurantTos = new ArrayList<>();
         for (Map.Entry<Restaurant, List<MenuItem>> entry : allMenuItemsGroupingByRestaurant.entrySet()) {
-            List<MenuItem> menuItemTos = getMenusByRestaurant(entry.getValue());
+            List<MenuItem> menuItemTos = getWithMenu(entry.getValue());
 
             restaurantTos.add(
                     new RestaurantTo(
@@ -33,8 +33,8 @@ public class RestaurantUtil {
         return restaurantTos;
     }
 
-    public static List<MenuItem> getMenusByRestaurant(Collection<MenuItem> restaurantsMenuItems) {
-        return restaurantsMenuItems.stream()
+    public static List<MenuItem> getWithMenu(Collection<MenuItem> menuItems) {
+        return menuItems.stream()
                 .map(menuItem -> new MenuItem(
                         menuItem.getId(),
                         menuItem.getDate(),
@@ -44,7 +44,7 @@ public class RestaurantUtil {
                 .collect(Collectors.toList());
     }
 
-    public static MenuItem getMenuItemByRestaurant(MenuItem menuItem) {
+    public static MenuItem getMenuItem(MenuItem menuItem) {
         return new MenuItem(
                 menuItem.getId(),
                 menuItem.getDate(),

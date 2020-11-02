@@ -49,7 +49,7 @@ class AdminControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(JsonUtil.writeValue(VOTED_USER_VOTES)));
+                .andExpect(content().json(JsonUtil.writeValue(USER_VOTES)));
     }
 
     @Test

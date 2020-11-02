@@ -44,13 +44,14 @@ public class TestData {
             new Vote(2, LocalDate.now(), ADMIN)
     );
 
-    public static final List<Vote> VOTED_USER_VOTES = List.of(
+    public static final Vote VOTE = new Vote(1, LocalDate.now(), RESTAURANT);
+
+    public static final List<Vote> USER_VOTES = List.of(
             new Vote(1, LocalDate.now(), RESTAURANT),
             new Vote(3, LocalDate.now().minusDays(1), RESTAURANT),
             new Vote(8, LocalDate.now().minusDays(2), RESTAURANT3)
     );
 
-    //for DISH
     public static final List<MenuItem> DISH_HISTORY = List.of(
             new MenuItem(1, LocalDate.now(), valueOf(255), RESTAURANT),
             new MenuItem(9, LocalDate.now(), valueOf(267), RESTAURANT4),
