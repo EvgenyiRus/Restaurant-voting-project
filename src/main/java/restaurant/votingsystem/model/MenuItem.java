@@ -30,7 +30,7 @@ public class MenuItem implements HasId {
     private Dish dish;
 
     @Column(name = "price", nullable = false, columnDefinition = "Decimal default 0")
-    @Range(min = 0, max = 99999)
+    @Range(min = 0, max = 9999)
     private BigDecimal price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,14 +46,6 @@ public class MenuItem implements HasId {
     private Integer dishId;
 
     public MenuItem() {
-    }
-
-    public MenuItem(Integer id, LocalDate date, BigDecimal price, Dish dish, Restaurant restaurant) {
-        this.id = id;
-        this.date = date;
-        this.dish = dish;
-        this.price = price.setScale(2);
-        this.restaurant = restaurant;
     }
 
     public MenuItem(Integer id, LocalDate date, BigDecimal price, Dish dish) {
@@ -76,13 +68,6 @@ public class MenuItem implements HasId {
         this.price = price.setScale(2);
         this.dishId = dishId;
         this.restaurantId = restaurantId;
-    }
-
-    public MenuItem(Integer id, BigDecimal price, Dish dish, Restaurant restaurant) {
-        this.id = id;
-        this.price = price.setScale(2);
-        this.dish = dish;
-        this.restaurant = restaurant;
     }
 
     public Integer getId() {

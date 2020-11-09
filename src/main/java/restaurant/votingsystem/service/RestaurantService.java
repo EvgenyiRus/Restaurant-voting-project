@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.model.Restaurant;
@@ -30,6 +31,7 @@ public class RestaurantService {
     @Autowired
     private MenuItemRepository menuItemRepository;
 
+    @Transactional
     @Cacheable(cacheNames = "menuItems", key = "#localDate")
     public List<RestaurantTo> getAllWithMenus(LocalDate localDate) {
         log.info("Get menus of all restaurants");

@@ -58,11 +58,6 @@ public class Vote implements HasId {
         this.user = user;
     }
 
-    public Vote(Integer id, User user) {
-        this.id = id;
-        this.user = user;
-    }
-
     public LocalDate getDate() {
         return date;
     }

@@ -29,26 +29,21 @@ public class MenuItemService {
     @Autowired
     private DishRepository dishRepository;
 
-    @Cacheable(key = "#id")
-    public List<MenuItem> getAllByRestaurant(int id, LocalDate localDate) {
-        log.info("Get menu from restaurant with id={}", id);
-        List<MenuItem> menuItems = menuItemRepository.getMenuOnDateByRestaurant(id, localDate);
+    @Cacheable(key = "#restaurantId")
+    public List<MenuItem> getAllByRestaurant(int restaurantId, LocalDate localDate) {
+        log.info("Get menu from restaurant with id={}", restaurantId);
+        List<MenuItem> menuItems = menuItemRepository.getMenuOnDateByRestaurant(restaurantId, localDate);
         return RestaurantUtil.getWithMenu(menuItems);
     }
 
     @Cacheable(key = "#id")
     public MenuItem getByRestaurant(int restaurantId, int id) {
         log.info("Get menu item with id={}", id);
-        MenuItem menuitem = menuItemRepository.findById(id).orElseThrow(
+        return menuItemRepository.findById(id).filter(menuItem ->
+                menuItem.getRestaurantId() == restaurantId).orElseThrow(
                 () -> new NotFoundException(
-                        new String[]{"menu item", String.valueOf(id)}, NotFoundException.NOT_FOUND_EXCEPTION)
-        );
-        if (restaurantId != menuitem.getRestaurant().id()) {
-            throw new NotFoundException(
-                    new String[]{"restaurant with id", String.valueOf(restaurantId), "menu item with id", String.valueOf(id)},
-                    NotFoundException.NOT_CONTAIN_EXCEPTION);
-        }
-        return menuitem;
+                        new String[]{"restaurant with id=", String.valueOf(restaurantId), "menu item with id=", String.valueOf(id)},
+                        NotFoundException.NOT_CONTAIN_EXCEPTION));
     }
 
     @CacheEvict(allEntries = true)
@@ -57,8 +52,7 @@ public class MenuItemService {
         log.info("New menu item for restaurant with id={} was added", restaurantId);
         Dish dish = dishRepository.findById(menuItem.getDishId()).orElseThrow(
                 () -> new NotFoundException(
-                        new String[]{"dish", String.valueOf(menuItem.getDishId())}, NotFoundException.NOT_FOUND_EXCEPTION)
-        );
+                        new String[]{"dish", String.valueOf(menuItem.getDishId())}, NotFoundException.NOT_FOUND_EXCEPTION));
         MenuItem created = menuItemRepository.save(
                 new MenuItem(menuItem.getId(), LocalDate.now(), menuItem.getPrice(), menuItem.getDishId(), restaurantId)
         );
@@ -82,18 +76,10 @@ public class MenuItemService {
     @Transactional
     public void updateMenuItem(MenuItem menuItem, int restaurantId, int id) {
         log.info("Menuitem with id={} for restaurant with id={} was updated", id, restaurantId);
-        if (findByRestaurant(id, restaurantId) == null) {
-            throw new NotFoundException(
-                    new String[]{"restaurant with id", String.valueOf(restaurantId), "menu item with id", String.valueOf(id)},
-                    NotFoundException.NOT_CONTAIN_EXCEPTION);
+        if (getByRestaurant(restaurantId, id) != null) {
+            menuItem.setId(id);
+            menuItem.setRestaurantId(restaurantId);
+            menuItemRepository.save(menuItem);
         }
-        menuItem.setId(id);
-        menuItem.setRestaurantId(restaurantId);
-        menuItemRepository.save(menuItem);
-    }
-
-    private MenuItem findByRestaurant(int id, int restaurantId) {
-        return menuItemRepository.findById(id)
-                .filter(menuItem -> menuItem.getRestaurant().getId() == restaurantId).orElse(null);
     }
 }

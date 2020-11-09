@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import restaurant.votingsystem.model.Vote;
 import restaurant.votingsystem.repository.VoteRepository;
+import restaurant.votingsystem.service.VoteService;
 import restaurant.votingsystem.web.json.JsonUtil;
 import restaurant.votingsystem.web.restaurant.RestaurantController;
 
@@ -19,14 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static restaurant.votingsystem.TestData.*;
 import static restaurant.votingsystem.TestUtil.readFromJson;
 import static restaurant.votingsystem.TestUtil.userHttpBasic;
-import static restaurant.votingsystem.VotingSystemApplication.TIME_VOTE;
 
 class VoteControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
-
-    static {
-        TIME_VOTE = LocalTime.of(23, 59, 59);
-    }
 
     @Autowired
     private VoteRepository voteRepository;
@@ -84,11 +80,11 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void updateOverTimeVoteException() throws Exception {
-        TIME_VOTE = LocalTime.of(11, 00, 01);
-        Vote editVote = new Vote(USER_VOTES.get(0).getId(), LocalDate.now(), RESTAURANT, USER);
+        VoteService.TIME_VOTE = LocalTime.now().minusMinutes(10);
+        Vote editVote = new Vote(USER_VOTES.get(0).getId(), LocalDate.now(), RESTAURANT, VOTED_USER);
         perform(MockMvcRequestBuilders
                 .put(REST_URL + "{id}/votes", RESTAURANT.getId())
-                .with(userHttpBasic(USER))
+                .with(userHttpBasic(VOTED_USER))
                 .content(JsonUtil.writeValue(editVote))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -99,7 +95,7 @@ class VoteControllerTest extends AbstractControllerTest {
     @Test
     @Transactional
     void update() throws Exception {
-        TIME_VOTE = LocalTime.of(23, 59, 59);
+        VoteService.TIME_VOTE = LocalTime.now().plusMinutes(10);
         Vote editVote = new Vote(RESTAURANT_VOTES.get(0).getId(), LocalDate.now(), RESTAURANT2, VOTED_USER);
         perform(MockMvcRequestBuilders
                 .put(REST_URL + "{id}/votes", RESTAURANT2.getId())

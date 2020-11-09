@@ -31,7 +31,7 @@ Build a voting system for deciding where to have lunch.
 ##### get Menu Restaurant 100014
 `curl -s http://localhost:8080/restaurants/100014/menus --user user@yandex.ru:password`
 
-##### get voted Users Restaurant 100014
+##### get Users who voted for Restaurant 100014
 `curl -s http://localhost:8080/restaurants/100014/votes --user user@yandex.ru:password`
 
 ##### create new Vote for Restaurant 100014
@@ -51,7 +51,7 @@ Build a voting system for deciding where to have lunch.
 ##### delete Restaurant 100014
 `curl -s -X DELETE http://localhost:8080/restaurants/100014 --user admin@gmail.com:admin`
  
-##### create new MenuItem for Restaurant 100014
+##### create today's new MenuItem for Restaurant 100014
 `curl -s -X POST -d '{"dishId":100003, "price":1000}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/restaurants/100014/menus --user admin@gmail.com:admin`
   
 ##### get All Users
@@ -60,7 +60,7 @@ Build a voting system for deciding where to have lunch.
 ##### get Users 100000
 `curl -s http://localhost:8080/admin/users/100000 --user admin@gmail.com:admin`
 
-##### get Votes Users 100000
+##### get votes Users 100000
 `curl -s http://localhost:8080/admin/users/100000/votes --user admin@gmail.com:admin`
 
 ##### create new Dish

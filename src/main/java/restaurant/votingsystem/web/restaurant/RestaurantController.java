@@ -23,13 +23,6 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping("/2")
-    public List<Restaurant> getAllWithMenu(@RequestParam(value = "withMenu", required = false) boolean withMenu) {
-//        if(withMenu)
-//            return restaurantService.getAllWithMenus(LocalDate.now());
-        return restaurantService.getAll();
-    }
-
     @GetMapping
     public List<Restaurant> getAll() {
         return restaurantService.getAll();
