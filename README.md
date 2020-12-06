@@ -31,13 +31,13 @@ Build a voting system for deciding where to have lunch.
 ##### get Menu Restaurant 100014
 `curl -s http://localhost:8080/restaurants/100014/menus --user user@yandex.ru:password`
 
-##### get Users who voted for Restaurant 100014
-`curl -s http://localhost:8080/restaurants/100014/votes --user user@yandex.ru:password`
-
-##### create new Vote for Restaurant 100014
+##### create Vote for Restaurant 100014
 `curl -s -X POST -d '{}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/restaurants/100014/votes --user gosha@gmail.com:gosha`
  
 ### cURL commands for admin:
+
+##### get Users who voted for Restaurant 100014
+`curl -s http://localhost:8080/restaurants/100014/votes --user user@yandex.ru:password`
 
 ##### get All Restaurants
 `curl -s http://localhost:8080/restaurants --user admin@gmail.com:admin`

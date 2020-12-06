@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import restaurant.votingsystem.model.User;
 import restaurant.votingsystem.repository.UserRepository;
 import restaurant.votingsystem.web.user.AuthorizedUser;
@@ -42,19 +43,23 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         };
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/restaurants/**/menus/**").hasAnyRole("ADMIN")
-                //Доступ разрешен анонимным пользователям и всем авторизированным
-                .antMatchers("/restaurants/**/menus/**", "/restaurants/**/votes", "/profile").authenticated()
+                //Доступ разрешен анонимным пользователям
                 .antMatchers("/profile/register").anonymous()
+                //Доступ разрешен авторизированным пользователям
+                .antMatchers(HttpMethod.GET,"/restaurants/**/menus/**").authenticated()
+                .antMatchers("/restaurants/**/votes", "/profile").authenticated()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**", "/restaurants/**", "/dishes/**").hasRole("ADMIN")
+                .antMatchers("/admin/**","/restaurants/**", "/dishes/**").hasRole("ADMIN")
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()

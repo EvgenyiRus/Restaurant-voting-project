@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.repository.MenuItemRepository;
 import restaurant.votingsystem.web.json.JsonUtil;
-import restaurant.votingsystem.web.restaurant.RestaurantController;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;

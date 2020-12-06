@@ -1,4 +1,4 @@
-package restaurant.votingsystem.web.menuItem;
+package restaurant.votingsystem.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.MenuItem;
 import restaurant.votingsystem.service.MenuItemService;
 import restaurant.votingsystem.util.RestaurantUtil;
-import restaurant.votingsystem.web.restaurant.RestaurantController;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -17,25 +16,26 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = MenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MenuItemController {
+    public static final String REST_URL = "/restaurants/{restaurantId}";
 
     @Autowired
     private MenuItemService menuItemService;
 
-    @GetMapping("/{restaurantId}/menus")
+    @GetMapping("/menus")
     public List<MenuItem> getMenusByRestaurant(@PathVariable int restaurantId) {
         List<MenuItem> menuItems = menuItemService.getAllByRestaurant(restaurantId, LocalDate.now());
         return RestaurantUtil.getWithMenu(menuItems);
     }
 
-    @GetMapping("/{restaurantId}/menus/{id}")
+    @GetMapping("/menus/{id}")
     public MenuItem get(@PathVariable int restaurantId, @PathVariable int id) {
         MenuItem menuitem = menuItemService.getByRestaurant(restaurantId, id);
         return RestaurantUtil.getMenuItem(menuitem);
     }
 
-    @PostMapping(value = "/{restaurantId}/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/menus", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MenuItem> create(@Valid @RequestBody MenuItem menuItem, @PathVariable int restaurantId) {
         MenuItem created = menuItemService.create(menuItem, restaurantId);
 
@@ -46,19 +46,19 @@ public class MenuItemController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/{restaurantId}/menus/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/menus/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody MenuItem menuItem, @PathVariable int restaurantId, @PathVariable int id) {
         menuItemService.updateMenuItem(menuItem, restaurantId, id);
     }
 
-    @DeleteMapping("/{restaurantId}/menus/{id}")
+    @DeleteMapping("/menus/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int restaurantId, @PathVariable int id) {
         menuItemService.delete(restaurantId, id);
     }
 
-    @DeleteMapping("/{restaurantId}/menus")
+    @DeleteMapping("/menus")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteMenuByRestaurant(@PathVariable int restaurantId) {
         menuItemService.deleteAllByRestaurant(restaurantId);

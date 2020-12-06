@@ -36,7 +36,7 @@ public class MenuItemService {
         return RestaurantUtil.getWithMenu(menuItems);
     }
 
-    @Cacheable(key = "#id")
+    @Cacheable(key = "{#id, #restaurantId}")
     public MenuItem getByRestaurant(int restaurantId, int id) {
         log.info("Get menu item with id={}", id);
         return menuItemRepository.findById(id).filter(menuItem ->

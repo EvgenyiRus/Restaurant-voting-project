@@ -1,11 +1,11 @@
 package restaurant.votingsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Entity
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = "description",
@@ -15,10 +15,6 @@ public class Dish extends AbstractBaseEntity {
     @NotBlank
     @Size(max = 100)
     private String description;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "dish")
-    @OrderBy("date DESC")
-    private List<MenuItem> menuItems;
 
     public Dish() {
     }
@@ -36,12 +32,4 @@ public class Dish extends AbstractBaseEntity {
         this.description = description;
     }
 
-    @JsonIgnore
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
-    }
-
-    public void setMenuItems(List<MenuItem> menuItems) {
-        this.menuItems = menuItems;
-    }
 }

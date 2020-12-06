@@ -35,6 +35,7 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Autowired
     VoteRepository voteRepository;
+
     @Autowired
     PasswordEncoder passwordEncoder;
 
