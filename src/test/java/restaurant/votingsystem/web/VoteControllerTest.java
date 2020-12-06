@@ -10,7 +10,6 @@ import restaurant.votingsystem.model.Vote;
 import restaurant.votingsystem.repository.VoteRepository;
 import restaurant.votingsystem.service.VoteService;
 import restaurant.votingsystem.web.json.JsonUtil;
-import restaurant.votingsystem.web.restaurant.RestaurantController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,7 +30,7 @@ class VoteControllerTest extends AbstractControllerTest {
     void get() throws Exception {
         perform(MockMvcRequestBuilders
                 .get(REST_URL + "{id}/votes", RESTAURANT.getId())
-                .with(userHttpBasic(USER)))
+                .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

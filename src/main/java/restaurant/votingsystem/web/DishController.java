@@ -1,11 +1,15 @@
-package restaurant.votingsystem.web.dish;
+package restaurant.votingsystem.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import restaurant.votingsystem.model.Dish;
@@ -19,10 +23,9 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-import static org.jsoup.internal.StringUtil.isBlank;
-
 @RestController
 @RequestMapping(value = DishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@CacheConfig(cacheNames={"dishes"})
 public class DishController {
     public static final String REST_URL = "/dishes";
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -33,20 +36,19 @@ public class DishController {
     @Autowired
     private MenuItemRepository menuItemRepository;
 
+    @GetMapping
+    @Cacheable
+    public List<Dish> getAll() {
+        log.info("Get all dishes");
+        return dishRepository.getAll();
+    }
+
     @GetMapping("/{id}")
+    @Cacheable(key = "#id")
     public Dish get(@PathVariable int id) {
         log.info("Get dish with id={} ", id);
         return dishRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(new String[]{"dish", String.valueOf(id)}, NotFoundException.NOT_FOUND_EXCEPTION));
-    }
-
-    @GetMapping
-    public List<Dish> getAll(@RequestParam(value = "description", required = false) String description) {
-        log.info("Get all dishes or that the description contains '{}'", description);
-        if (!isBlank(description)) {
-            return dishRepository.getAllByDescription(description.toLowerCase());
-        }
-        return dishRepository.getAllByDescription("");
     }
 
     @GetMapping("/{id}/history")
@@ -57,6 +59,7 @@ public class DishController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void delete(@PathVariable int id) {
         log.info("Dish with id={} was deleted", id);
         dishRepository.delete(id);
@@ -64,6 +67,7 @@ public class DishController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void update(@Valid @RequestBody Dish dish, @PathVariable int id) {
         log.info("Dish with id='{}' was updated", id);
         dish.setId(id);
@@ -71,6 +75,7 @@ public class DishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(allEntries = true)
     public ResponseEntity<Dish> create(@Valid @RequestBody Dish dish) {
         log.info("New dish '{}' was added", dish.getDescription());
         dishRepository.save(dish);

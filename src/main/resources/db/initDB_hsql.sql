@@ -60,7 +60,7 @@ CREATE TABLE menu_items
     CONSTRAINT menus_items_idx UNIQUE (date_create, restaurant_id, dish_id)
 );
 CREATE INDEX menu_items_idx
-    ON menu_items (dish_id, date_create);
+    ON menu_items (date_create, dish_id);
 ------------------------------------------------------------------------------------------
 CREATE TABLE votes
 (
@@ -74,5 +74,3 @@ CREATE TABLE votes
 );
 CREATE INDEX votes_item_idx_restaurant
     ON votes (restaurant_id, date_create);
-CREATE INDEX votes_item_idx_user
-    ON votes (user_id, date_create);
