@@ -1,6 +1,6 @@
 Restaurant voting project 
 ===============================
-Design and implement a REST API using Hibernate/Spring/Spring-Boot **without frontend**.
+Design and implement a REST API using Hibernate/Spring-Boot **without frontend**.
 
 The task is:
 
