@@ -1,5 +1,6 @@
 package restaurant.votingsystem.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,12 +18,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@Tag(name = "The Vote API", description = "Work with votes users")
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
     public static final String REST_URL = "/restaurants/{restaurantId}";
 
-    @Autowired
-    private VoteService voteService;
+    private final VoteService voteService;
+
+    public VoteController(VoteService voteService) {
+        this.voteService = voteService;
+    }
 
     @GetMapping("/votes")
     public List<Vote> getAllByRestaurantToDay(@PathVariable int restaurantId) {

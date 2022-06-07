@@ -26,9 +26,9 @@ import java.util.Optional;
 public class WebSecurity extends WebSecurityConfigurerAdapter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
     public WebSecurity(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

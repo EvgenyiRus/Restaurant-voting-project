@@ -1,5 +1,6 @@
 package restaurant.votingsystem.web.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +25,20 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@Tag(name = "The User API", description = "Work with profiles users")
 @RequestMapping(value = UserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
     static final String REST_URL = "/profile";
     private final Logger log = LoggerFactory.getLogger(getClass());
+    private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    protected UserRepository userRepository;
-
-    @Autowired
-    private VoteRepository voteRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserController(UserRepository userRepository, VoteRepository voteRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.voteRepository = voteRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public UserTo get(@AuthenticationPrincipal AuthorizedUser authUser) {

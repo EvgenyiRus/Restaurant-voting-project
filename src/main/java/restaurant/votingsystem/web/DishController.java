@@ -1,5 +1,6 @@
 package restaurant.votingsystem.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@Tag(name = "The Dishes API", description = "Work with dishes")
 @RequestMapping(value = DishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @CacheConfig(cacheNames={"dishes"})
 public class DishController {

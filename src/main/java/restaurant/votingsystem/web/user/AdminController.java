@@ -1,5 +1,6 @@
 package restaurant.votingsystem.web.user;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@Tag(name = "The Admin API", description = "Work with users")
 @RequestMapping(value = AdminController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminController {
     static final String REST_URL = "/admin/users";

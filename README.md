@@ -18,6 +18,11 @@ Build a voting system for deciding where to have lunch.
 ##### Each restaurant provides new menu each day.
 
 ----------
+### Swagger UI: 
+
+http://localhost:8080/swagger-ui/index.html
+
+----------
 ### cURL commands for unregister user:
 
 ##### register new User

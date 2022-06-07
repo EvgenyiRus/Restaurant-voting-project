@@ -1,5 +1,6 @@
 package restaurant.votingsystem.web;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@Tag(name = "The Menu API", description = "Work with menus for restaurants")
 @RequestMapping(value = MenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MenuItemController {
     public static final String REST_URL = "/restaurants/{restaurantId}";
